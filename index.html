@@ -1047,7 +1047,7 @@ function fmtDate(iso) {
 }
 async function registerSW() {
   if ('serviceWorker' in navigator) {
-    try { await navigator.serviceWorker.register('/sw.js'); } catch(e) { logErr('SW',e.message); }
+    try { await navigator.serviceWorker.register('sw.js'); } catch(e) { logErr('SW',e.message); }
   }
 }
 </script>
