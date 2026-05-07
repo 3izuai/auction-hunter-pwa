@@ -19,7 +19,7 @@
   --red:#9B2020;   --red-bg:rgba(155,32,32,.12);
   --blue:#1A3F7A;  --blue-bg:rgba(26,63,122,.12);
   --border:rgba(28,26,23,.13);
-  --safe-top:env(safe-area-inset-top,0px);
+  --safe-top:env(safe-area-inset-top,47px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -287,6 +287,35 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .empty-icon{font-size:52px;margin-bottom:14px;display:block}
 .empty-text{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink3)}
 .empty-sub{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.7}
+
+/* ── REJECT / CALENDAR BUTTON ── */
+.action-row{display:flex;gap:6px;margin-top:6px}
+.action-row>.open-btn{flex:1;margin-top:0}
+.reject-btn{display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--paper2);
+  font-size:12px;font-weight:700;color:var(--ink3);cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;transition:.12s;white-space:nowrap}
+.reject-btn:active{transform:scale(.98);background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.cal-btn{display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--paper2);
+  font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;
+  font-family:'Noto Sans JP',sans-serif;transition:.12s;white-space:nowrap}
+.cal-btn:active{transform:scale(.98)}
+.card.rejected{opacity:.35;pointer-events:none}
+
+/* ── COND EDIT BTN ── */
+.cond-edit{width:28px;height:28px;border-radius:50%;background:none;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);
+  flex-shrink:0;font-size:13px;margin-right:4px}
+.cond-edit:hover{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+
+/* ── SCAN BTN ── */
+.scan-toolbar{padding:12px 14px 0;display:flex;gap:8px;justify-content:flex-end}
+.scan-status{font-size:12px;color:var(--ink3);padding:8px 14px;font-family:'DM Mono',monospace}
+.set-indicator{font-size:11px;font-family:'DM Mono',monospace;padding:4px 10px;
+  border-radius:5px;margin-top:6px;display:inline-block}
+.set-indicator.ok{background:var(--green-bg);color:var(--green)}
+.set-indicator.none{background:var(--amber-bg);color:var(--amber)}
 </style>
 </head>
 <body>
@@ -359,7 +388,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 <!-- ===== BOUGHT ===== -->
 <div id="sec-bought" class="sec">
-  <div class="list" id="bought-list" style="padding-top:14px">
+  <div class="scan-toolbar">
+    <button class="stamp-btn outline" style="font-size:12px" onclick="manualScanGmail('recent')">📬 手動スキャン（直近30日）</button>
+    <button class="stamp-btn outline" style="font-size:12px" onclick="manualScanGmail('historical')">📦 過去分一括取得（90日）</button>
+  </div>
+  <div id="scan-status" class="scan-status"></div>
+  <div class="list" id="bought-list" style="padding-top:8px">
     <div class="loader"><span class="otter">🦦</span><div class="loader-text">読み込み中...</div></div>
   </div>
 </div>
@@ -378,14 +412,39 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
         </div>
         <input class="set-text" id="ntfy-topic" type="text" placeholder="cheapy-xxxxxxxx">
       </div>
+      <div id="ntfy-status" class="ntfy-status none">未設定</div>
       <div class="ntfy-hint">
         <b>📱 ntfy.shの使い方（無料・アプリ不要）</b>
         1. スマホで <a href="https://ntfy.sh" target="_blank">https://ntfy.sh</a> を開く<br>
         2. 「Subscribe to topic」→ 上で設定したトピック名を入力<br>
-        3. ブックマークしておく。通知が届くたびにここに表示される<br>
-        または「ntfy」アプリ（iOS/Android）をインストールして購読
+        3. または「ntfy」アプリ（iOS/Android）をインストールして購読
       </div>
-      <div id="ntfy-status" class="ntfy-status none">未設定</div>
+    </div>
+
+    <!-- Claude API キー設定 -->
+    <div class="set-card">
+      <div class="set-title">🤖 Claude APIキー設定（候補提案用）</div>
+      <div class="set-row">
+        <div>
+          <div class="set-key">APIキー</div>
+          <div class="set-desc">Anthropic Consoleから取得（sk-ant-...）</div>
+        </div>
+        <input class="set-text" id="claude-api-key" type="password" placeholder="sk-ant-api03-...">
+      </div>
+      <div id="claude-key-status" class="set-indicator none">未設定</div>
+    </div>
+
+    <!-- GAS WebApp URL -->
+    <div class="set-card">
+      <div class="set-title">⚙️ GAS WebApp URL（手動スキャン用）</div>
+      <div class="set-row">
+        <div>
+          <div class="set-key">GAS WebApp URL</div>
+          <div class="set-desc">GASスクリプトを「ウェブアプリとして導入」した後のURL</div>
+        </div>
+        <input class="set-text" id="gas-webapp-url" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+      </div>
+      <div id="gas-url-status" class="set-indicator none">未設定</div>
     </div>
 
     <!-- 行動スコア -->
@@ -449,7 +508,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 <div class="modal-overlay" id="add-modal" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-title">
-      検索条件を追加
+      <span id="modal-title-text">検索条件を追加</span>
       <div class="modal-close" onclick="closeModal()">×</div>
     </div>
     <div style="margin-bottom:10px">
@@ -506,23 +565,24 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <input class="fi" type="text" id="m-memo" placeholder="例：SDピックアップ狙い">
     </div>
     <button class="stamp-btn" style="width:100%;justify-content:center;padding:13px;font-size:15px"
-      onclick="addCondition()">この条件を追加</button>
+      id="modal-submit-btn" onclick="submitCondition()">この条件を追加</button>
   </div>
 </div>
 
 <script>
 // ============================================================
-const WORKER_URL = 'https://auction-hunter.3izuai.workers.dev'; // ★要変更
-const API_SECRET = 'yuuta0424'; // ★追加
+const WORKER_URL   = 'https://auction-hunter.3izuai.workers.dev/';
+const API_SECRET   = 'yuuta0424';
 
 // ★修正：デフォルト設定
 const DEFAULTS = { view30:20, imgs:15, time:10, desc:10, open:25, thresh:60, skipDays:2 };
 
-let CFG        = loadCFG();
-let allItems   = [];
-let conditions = [];
-let curPF      = 'all';
-let errorLog   = JSON.parse(localStorage.getItem('errorLog') || '[]');
+let CFG            = loadCFG();
+let allItems       = [];
+let conditions     = [];
+let curPF          = 'all';
+let editingCondIdx = null; // ★条件編集用
+let errorLog       = JSON.parse(localStorage.getItem('errorLog') || '[]');
 
 // ★修正：行動スコアをlocalStorageから復元
 let behaviorState = JSON.parse(localStorage.getItem('behaviorState') || '{}');
@@ -532,10 +592,11 @@ let behaviorState = JSON.parse(localStorage.getItem('behaviorState') || '{}');
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   applySettingsUI();
+  restoreSettingsFromStorage(); // ★ntfyトピック等をlocalStorageから復元
   updateErrBadge();
-  loadNtfyStatus();
   await Promise.all([loadItems(), loadConditions()]);
   checkHeartbeat();
+  loadConfigStatus(); // ★設定済み状態をWorkerから確認
   setInterval(checkHeartbeat, 10 * 60 * 1000); // 10分ごと
   setInterval(checkSkipped,   60 * 60 * 1000); // 1時間ごと
   checkSkipped();
@@ -653,8 +714,11 @@ function renderCard(item, idx) {
       <a href="${appUrl}" target="_blank" rel="noopener" class="open-btn primary" onclick="trackAction('${item.id}','open')">
         👀 ${openLbl}（ウォッチ登録へ）
       </a>
-      <div class="open-btn" style="font-size:12px;color:var(--ink3)" onclick="trackAction('${item.id}','time')">
-        🕐 終了時間を確認 ${item.remainText?'— '+item.remainText:''}
+      <div class="action-row">
+        <div class="cal-btn" onclick="registerCalendar(${JSON.stringify({id:item.id,title:item.title,price:item.price,url:appUrl,remainHours:item.remainHours,remainText:item.remainText}).replace(/"/g,'&quot;')})">
+          📅 ${item.remainHours >= 24 ? 'カレンダー登録' : 'タイマー設定'}
+        </div>
+        <div class="reject-btn" onclick="rejectItem('${item.id}',this)">🚫 不要</div>
       </div>
     </div>
   </div>`;
@@ -844,27 +908,64 @@ function renderConditions() {
           ${c.memo?`<span>📝 ${c.memo}</span>`:''}
         </div>
       </div>
+      <button class="cond-edit" onclick="openEditModal(${i})" title="編集">✏️</button>
       <button class="cond-del" onclick="deleteCond(${i})">×</button>
     </div>`;
   }).join('');
 }
 
-function openModal()  { document.getElementById('add-modal').classList.add('open'); }
+function openModal() {
+  editingCondIdx = null;
+  document.getElementById('modal-title-text').textContent = '検索条件を追加';
+  document.getElementById('modal-submit-btn').textContent = 'この条件を追加';
+  ['m-kw','m-memo','m-maxp','m-maxb'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('m-pf').value='all';
+  document.getElementById('m-cat').value='';
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function openEditModal(i) {
+  editingCondIdx = i;
+  const c = conditions[i];
+  document.getElementById('modal-title-text').textContent = '条件を編集';
+  document.getElementById('modal-submit-btn').textContent = '変更を保存';
+  document.getElementById('m-pf').value   = c.platform || 'all';
+  document.getElementById('m-kw').value   = c.keyword || '';
+  document.getElementById('m-cat').value  = c.category || '';
+  document.getElementById('m-maxp').value = c.maxPrice || '';
+  document.getElementById('m-maxb').value = c.maxBuyNow || '';
+  document.getElementById('m-memo').value = c.memo || '';
+  document.getElementById('add-modal').classList.add('open');
+}
+
 function closeModal(e){ if(!e||e.target===document.getElementById('add-modal')||!e.target.closest('.modal')) document.getElementById('add-modal').classList.remove('open'); }
 
-async function addCondition() {
-  if (conditions.length>=100) { alert('最大100件です'); return; }
+async function submitCondition() {
   const kw=document.getElementById('m-kw').value.trim(), cat=document.getElementById('m-cat').value;
   if (!kw&&!cat) { alert('キーワードかカテゴリを入力してください'); return; }
-  conditions.push({ id:Date.now().toString(), platform:document.getElementById('m-pf').value,
-    keyword:kw, category:cat, maxPrice:+document.getElementById('m-maxp').value||0,
-    maxBuyNow:+document.getElementById('m-maxb').value||0,
-    memo:document.getElementById('m-memo').value.trim(), active:true, createdAt:new Date().toISOString() });
+  const entry = {
+    id: editingCondIdx !== null ? conditions[editingCondIdx].id : Date.now().toString(),
+    platform: document.getElementById('m-pf').value,
+    keyword: kw, category: cat,
+    maxPrice:  +document.getElementById('m-maxp').value||0,
+    maxBuyNow: +document.getElementById('m-maxb').value||0,
+    memo: document.getElementById('m-memo').value.trim(),
+    active: true,
+    createdAt: editingCondIdx !== null ? conditions[editingCondIdx].createdAt : new Date().toISOString(),
+  };
+  if (editingCondIdx !== null) {
+    conditions[editingCondIdx] = entry;
+  } else {
+    if (conditions.length>=100) { alert('最大100件です'); return; }
+    conditions.push(entry);
+  }
   await saveConditions();
   closeModal();
-  ['m-kw','m-memo','m-maxp','m-maxb'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('m-pf').value='all'; document.getElementById('m-cat').value='';
+  renderConditions();
 }
+
+// 互換性のため残す
+async function addCondition() { await submitCondition(); }
 
 async function toggleCond(i) { conditions[i].active=!conditions[i].active; await saveConditions(); renderConditions(); }
 async function deleteCond(i) {
@@ -908,14 +1009,18 @@ ${existKws.join(', ')||'なし'}
 重複なく8〜12件提案してください。`;
 
   try {
-    // ★Worker経由でClaude APIを呼ぶ
+    // ★Worker経由でClaude APIを呼ぶ（認証ヘッダー追加）
     const res  = await fetch(`${WORKER_URL}/claude-proxy`, {
-      method:'POST', headers:{'Content-Type':'application/json'},
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
       body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
         messages:[{role:'user',content:prompt}] })
     });
     const data  = await res.json();
+    // ★エラーレスポンスチェック
+    if (data.error) throw new Error(data.error);
     const raw   = (data.content||[]).map(c=>c.text||'').join('');
+    if (!raw) throw new Error('空のレスポンスが返されました（Claude APIキーを設定タブで登録してください）');
     const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
     renderSuggestions(parsed.suggestions||[]);
   } catch(e) {
@@ -940,8 +1045,71 @@ function addSugKw(keyword, platform) {
 }
 
 // ============================================================
-// BOUGHT
+// 不要ボタン（スルー登録）
 // ============================================================
+async function rejectItem(id, btnEl) {
+  await sendFeedback(id, 'bad');
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.add('rejected');
+}
+
+// ============================================================
+// カレンダー / タイマー登録
+// ============================================================
+function registerCalendar(item) {
+  const remainMs  = (item.remainHours || 0) * 60 * 60 * 1000;
+  const endTime   = new Date(Date.now() + remainMs);
+  const notifyTime = new Date(endTime.getTime() - 30 * 60 * 1000); // 30分前
+
+  // 24時間未満 → 残り時間コピー＋タイマー案内
+  if (!item.remainHours || item.remainHours < 24) {
+    const h = Math.floor(item.remainHours || 0);
+    const m = Math.round(((item.remainHours || 0) - h) * 60);
+    const timeStr = h > 0 ? `${h}時間${m}分` : `${m}分`;
+    const msg = `⏰ 残り時間: ${item.remainText || timeStr}\n\n時計アプリのタイマーで設定してください。\n（残り時間をコピーしました）`;
+    navigator.clipboard?.writeText(timeStr).catch(()=>{});
+    alert(msg);
+    trackAction(item.id, 'time');
+    return;
+  }
+
+  // 24時間以上 → Googleカレンダーへ
+  const fmt = d => d.toISOString().replace(/[-:.]/g,'').slice(0,15) + 'Z';
+  const calStart = fmt(notifyTime);
+  const calEnd   = fmt(new Date(notifyTime.getTime() + 30 * 60 * 1000));
+  const titleEnc = encodeURIComponent(`🦦 ヤフオク終了30分前: ${(item.title||'').slice(0,40)}`);
+  const detailEnc= encodeURIComponent(`${item.url||''}\n¥${(item.price||0).toLocaleString()} / 残り${item.remainText||''}`);
+  const calUrl   = `https://calendar.google.com/calendar/r/eventedit?text=${titleEnc}&dates=${calStart}/${calEnd}&details=${detailEnc}`;
+  window.open(calUrl, '_blank');
+  trackAction(item.id, 'time');
+}
+
+// ============================================================
+// 落札Gmail 手動スキャン
+// ============================================================
+async function manualScanGmail(mode) {
+  const statusEl = document.getElementById('scan-status');
+  if (statusEl) statusEl.textContent = mode === 'historical' ? '過去90日分をスキャン中...' : '直近30日をスキャン中...';
+
+  try {
+    const res  = await fetch(`${WORKER_URL}/scan-gmail`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${API_SECRET}` },
+      body:    JSON.stringify({ mode }),
+    });
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      if (statusEl) statusEl.textContent = `⚠ ${data.error || 'エラーが発生しました'}`;
+      logErr('PWA', `手動スキャンエラー: ${data.error}`);
+    } else {
+      if (statusEl) statusEl.textContent = '✓ スキャン完了！ページを更新します...';
+      setTimeout(() => { loadBought(); if(statusEl) statusEl.textContent=''; }, 2000);
+    }
+  } catch(e) {
+    if (statusEl) statusEl.textContent = `⚠ 通信エラー: GAS WebApp URLを設定してください`;
+    logErr('PWA', `手動スキャン通信エラー: ${e.message}`);
+  }
+}
 async function loadBought() {
   try {
     const res  = await fetch(`${WORKER_URL}/bought`);
@@ -975,13 +1143,99 @@ function applySettingsUI() {
   });
   const sk=document.getElementById('s-skip'); if(sk) sk.value=CFG.skipDays;
 }
-function saveSettings() {
-  // ntfyトピック保存
+
+// ★ localStorage から各設定フィールドに復元
+function restoreSettingsFromStorage() {
+  const topic = localStorage.getItem('ntfyTopic') || '';
+  const gasUrl = localStorage.getItem('gasWebAppUrl') || '';
+  if (topic) {
+    const el = document.getElementById('ntfy-topic');
+    if (el) el.value = topic;
+    updateNtfyIndicator(topic);
+  }
+  if (gasUrl) {
+    const el = document.getElementById('gas-webapp-url');
+    if (el) el.value = gasUrl;
+  }
+}
+
+// ★ Worker から設定済み状態を確認して表示
+async function loadConfigStatus() {
+  try {
+    const res  = await fetch(`${WORKER_URL}/config`);
+    const data = await res.json();
+    // Claude APIキー
+    const ckEl = document.getElementById('claude-key-status');
+    if (ckEl) {
+      ckEl.className = 'set-indicator ' + (data.claudeKeySet ? 'ok' : 'none');
+      ckEl.textContent = data.claudeKeySet ? '✓ 設定済み' : '未設定';
+    }
+    // GAS URL
+    const guEl = document.getElementById('gas-url-status');
+    if (guEl) {
+      guEl.className = 'set-indicator ' + (data.gasUrlSet ? 'ok' : 'none');
+      guEl.textContent = data.gasUrlSet ? '✓ 設定済み' : '未設定';
+    }
+    // ntfyトピック
+    if (data.ntfyTopic) {
+      updateNtfyIndicator(data.ntfyTopic);
+      const el = document.getElementById('ntfy-topic');
+      if (el && !el.value) el.value = data.ntfyTopic;
+      localStorage.setItem('ntfyTopic', data.ntfyTopic);
+    }
+  } catch(e) {}
+}
+
+function updateNtfyIndicator(topic) {
+  const el = document.getElementById('ntfy-status');
+  if (!el) return;
+  if (topic) {
+    el.className='ntfy-status ok'; el.textContent=`✓ 設定済み：${topic}`;
+  } else {
+    el.className='ntfy-status none'; el.textContent='未設定';
+  }
+}
+
+async function saveSettings() {
+  // ntfyトピック
   const topic = (document.getElementById('ntfy-topic').value||'').trim();
   if (topic) {
+    localStorage.setItem('ntfyTopic', topic);
     fetch(`${WORKER_URL}/ntfy-topic`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic})})
-      .then(()=>loadNtfyStatus()).catch(e=>logErr('PWA',`ntfy設定エラー: ${e.message}`));
+      .then(()=>updateNtfyIndicator(topic)).catch(e=>logErr('PWA',`ntfy設定エラー: ${e.message}`));
   }
+
+  // Claude APIキー
+  const apiKey = (document.getElementById('claude-api-key').value||'').trim();
+  if (apiKey) {
+    try {
+      const r = await fetch(`${WORKER_URL}/set-claude-key`,{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
+        body:JSON.stringify({apiKey})});
+      const d = await r.json();
+      const el = document.getElementById('claude-key-status');
+      if (d.ok) { if(el){el.className='set-indicator ok';el.textContent='✓ 設定済み';} }
+      else { if(el){el.className='set-indicator none';el.textContent='エラー: '+d.error;} }
+    } catch(e) { logErr('PWA',`Claude APIキー設定エラー: ${e.message}`); }
+    document.getElementById('claude-api-key').value = ''; // 入力欄をクリア
+  }
+
+  // GAS WebApp URL
+  const gasUrl = (document.getElementById('gas-webapp-url').value||'').trim();
+  if (gasUrl) {
+    localStorage.setItem('gasWebAppUrl', gasUrl);
+    try {
+      const r = await fetch(`${WORKER_URL}/set-gas-url`,{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
+        body:JSON.stringify({url:gasUrl})});
+      const d = await r.json();
+      const el = document.getElementById('gas-url-status');
+      if (d.ok) { if(el){el.className='set-indicator ok';el.textContent='✓ 設定済み';} }
+      else { if(el){el.className='set-indicator none';el.textContent='エラー: '+d.error;} }
+    } catch(e) { logErr('PWA',`GAS URL設定エラー: ${e.message}`); }
+  }
+
+  // 数値設定
   CFG = {
     view30:+document.getElementById('s-view30').value,
     imgs:  +document.getElementById('s-imgs').value,
@@ -995,14 +1249,7 @@ function saveSettings() {
   alert('✓ 設定を保存しました');
 }
 
-async function loadNtfyStatus() {
-  try {
-    const res  = await fetch(`${WORKER_URL}/heartbeat`); // トピック確認用に流用
-    const el   = document.getElementById('ntfy-status');
-    // トピックの有無だけ確認（別途エンドポイントが必要な場合は追加）
-    if (el) { el.className='ntfy-status ok'; el.textContent='設定済み'; }
-  } catch(e) {}
-}
+async function loadNtfyStatus() { /* 互換性のため残す */ }
 
 // ============================================================
 // ERRORS
@@ -1048,7 +1295,7 @@ function fmtDate(iso) {
 }
 async function registerSW() {
   if ('serviceWorker' in navigator) {
-    try { await navigator.serviceWorker.register('sw.js'); } catch(e) { logErr('SW',e.message); }
+    try { await navigator.serviceWorker.register('/sw.js'); } catch(e) { logErr('SW',e.message); }
   }
 }
 </script>
