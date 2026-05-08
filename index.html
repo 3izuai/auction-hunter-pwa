@@ -494,7 +494,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <div class="err-section">
     <div class="err-header">
       <div class="err-title">エラー履歴</div>
-      <button class="clear-btn" onclick="clearErrors()">クリア</button>
+      <div style="display:flex;gap:8px">
+        <button class="clear-btn" onclick="copyAllErrors()">📋 全件コピー</button>
+        <button class="clear-btn" onclick="clearErrors()">クリア</button>
+      </div>
     </div>
     <div class="err-hint">
       <b>💬 エラーが出たときの対処法</b>
@@ -1275,6 +1278,15 @@ function renderErrors() {
     <button class="copy-err-btn" onclick="copyErr(${i})">📋 コピーしてClaudeに送る</button>
   </div>`).join('');
 }
+function copyAllErrors() {
+  if (!errorLog.length) { alert('エラーはありません'); return; }
+  const text = errorLog.map((e, i) =>
+    `【エラー ${i+1}】\nソース: ${e.source}\n時刻: ${e.at}\nメッセージ: ${e.message}`
+  ).join('\n\n' + '─'.repeat(30) + '\n\n');
+  const full = `【Cheapy's Radar エラー一括報告】（${errorLog.length}件）\n\n` + text;
+  navigator.clipboard.writeText(full).then(() => alert(`✓ ${errorLog.length}件のエラーをコピーしました。Claudeに貼り付けてください。`));
+}
+
 function copyErr(i) {
   const e=errorLog[i];
   const text=`【Cheapy's Radar エラー報告】\nソース: ${e.source}\n時刻: ${e.at}\nメッセージ: ${e.message}`;
