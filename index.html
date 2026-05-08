@@ -19,15 +19,25 @@
   --red:#9B2020;   --red-bg:rgba(155,32,32,.12);
   --blue:#1A3F7A;  --blue-bg:rgba(26,63,122,.12);
   --border:rgba(28,26,23,.13);
-  --safe-top:env(safe-area-inset-top,47px);
+  --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--ink);min-height:100dvh}
 
+/* ── SAFE AREA SPACER（iPhone ノッチ・Dynamic Island対応）── */
+.safe-spacer{
+  height:env(safe-area-inset-top,47px);
+  min-height:47px;
+  background:var(--ink);
+  position:sticky;
+  top:0;
+  z-index:201;
+}
+
 /* ── HEADER ── */
-.hdr{background:var(--ink);padding:calc(var(--safe-top)+10px) 16px 10px;
-  position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between}
+.hdr{background:var(--ink);padding:10px 16px;
+  position:sticky;top:env(safe-area-inset-top,47px);z-index:200;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:38px;height:38px;border-radius:50%;background:var(--paper);
   display:flex;align-items:center;justify-content:center;font-size:22px;
@@ -320,6 +330,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 </head>
 <body>
 
+<div class="safe-spacer"></div>
+
 <!-- HEADER -->
 <div class="hdr">
   <div class="logo">
@@ -404,34 +416,19 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
     <!-- ntfy.sh 通知設定 -->
     <div class="set-card">
-      <div class="set-title">📳 プッシュ通知設定（ntfy.sh）</div>
+      <div class="set-title">📳 プッシュ通知（ntfy.sh）</div>
       <div class="set-row">
         <div>
           <div class="set-key">トピック名</div>
-          <div class="set-desc">自分だけのランダムな文字列を設定（例：cheapy-abc123）</div>
+          <div id="ntfy-topic-display" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--ink);margin-top:4px">Cheapysrader0314</div>
         </div>
-        <input class="set-text" id="ntfy-topic" type="text" placeholder="cheapy-xxxxxxxx">
+        <button class="clear-btn" onclick="editField('ntfy')">✏️ 編集</button>
       </div>
-      <div id="ntfy-status" class="ntfy-status none">未設定</div>
-      <div class="ntfy-hint">
-        <b>📱 ntfy.shの使い方（無料・アプリ不要）</b>
-        1. スマホで <a href="https://ntfy.sh" target="_blank">https://ntfy.sh</a> を開く<br>
-        2. 「Subscribe to topic」→ 上で設定したトピック名を入力<br>
-        3. または「ntfy」アプリ（iOS/Android）をインストールして購読
+      <div id="ntfy-edit-row" style="display:none;margin-top:8px">
+        <input class="fi" id="ntfy-topic" type="text" placeholder="トピック名" style="width:100%">
+        <button class="stamp-btn" style="margin-top:8px;width:100%;justify-content:center" onclick="saveField('ntfy')">保存</button>
       </div>
-    </div>
-
-    <!-- Claude API キー設定 -->
-    <div class="set-card">
-      <div class="set-title">🤖 Claude APIキー設定（候補提案用）</div>
-      <div class="set-row">
-        <div>
-          <div class="set-key">APIキー</div>
-          <div class="set-desc">Anthropic Consoleから取得（sk-ant-...）</div>
-        </div>
-        <input class="set-text" id="claude-api-key" type="password" placeholder="sk-ant-api03-...">
-      </div>
-      <div id="claude-key-status" class="set-indicator none">未設定</div>
+      <div id="ntfy-status" class="ntfy-status ok" style="margin-top:6px">✓ 設定済み：Cheapysrader0314</div>
     </div>
 
     <!-- GAS WebApp URL -->
@@ -439,13 +436,18 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <div class="set-title">⚙️ GAS WebApp URL（手動スキャン用）</div>
       <div class="set-row">
         <div>
-          <div class="set-key">GAS WebApp URL</div>
-          <div class="set-desc">GASスクリプトを「ウェブアプリとして導入」した後のURL</div>
+          <div class="set-key">WebApp URL</div>
+          <div id="gas-url-display" style="font-size:11px;color:var(--ink3);margin-top:4px;word-break:break-all">未設定</div>
         </div>
-        <input class="set-text" id="gas-webapp-url" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+        <button class="clear-btn" onclick="editField('gas')">✏️ 編集</button>
       </div>
-      <div id="gas-url-status" class="set-indicator none">未設定</div>
+      <div id="gas-edit-row" style="display:none;margin-top:8px">
+        <input class="fi" id="gas-webapp-url" type="text" placeholder="https://script.google.com/macros/s/.../exec" style="width:100%">
+        <button class="stamp-btn" style="margin-top:8px;width:100%;justify-content:center" onclick="saveField('gas')">保存</button>
+      </div>
+      <div id="gas-url-status" class="set-indicator none" style="margin-top:6px">未設定</div>
     </div>
+
 
     <!-- 行動スコア -->
     <div class="set-card">
@@ -640,9 +642,16 @@ async function loadItems() {
     renderItems(allItems);
     updateStats(allItems);
   } catch(e) {
+    const isNet = e.message.includes('Load failed') || e.message.includes('Failed to fetch') || e.message.includes('NetworkError');
+    const msg = isNet
+      ? '⚠ Workerに接続できません\nCloudflare Workerが正しくデプロイされているか確認してください'
+      : `読み込みエラー: ${e.message}`;
     logErr('PWA', `出品読み込みエラー: ${e.message}`);
     document.getElementById('item-list').innerHTML =
-      `<div class="empty"><span class="empty-icon">⚠️</span><div class="empty-text">読み込みに失敗しました</div></div>`;
+      `<div class="empty"><span class="empty-icon">📡</span>
+        <div class="empty-text">接続できません</div>
+        <div class="empty-sub">Cloudflare WorkerのデプロイをCloudflare Dashboardで確認してください<br><br>
+        <button class="stamp-btn outline" onclick="loadItems()" style="font-size:12px">🔄 再試行</button></div></div>`;
   }
 }
 
@@ -1137,6 +1146,8 @@ async function loadBought() {
 // ============================================================
 // SETTINGS
 // ============================================================
+const NTFY_TOPIC_DEFAULT = 'Cheapysrader0314'; // ★アプリ更新時ここを変える
+
 function loadCFG() {
   try { return {...DEFAULTS,...JSON.parse(localStorage.getItem('cfg')||'{}')}; } catch { return {...DEFAULTS}; }
 }
@@ -1147,98 +1158,73 @@ function applySettingsUI() {
   const sk=document.getElementById('s-skip'); if(sk) sk.value=CFG.skipDays;
 }
 
-// ★ localStorage から各設定フィールドに復元
+// ★ 起動時に各設定を復元
 function restoreSettingsFromStorage() {
-  const topic = localStorage.getItem('ntfyTopic') || '';
+  // ntfyトピック：localStorageにあればそちら、なければデフォルト
+  const savedTopic = localStorage.getItem('ntfyTopic') || NTFY_TOPIC_DEFAULT;
+  updateNtfyDisplay(savedTopic);
+
+  // GAS WebApp URL
   const gasUrl = localStorage.getItem('gasWebAppUrl') || '';
-  if (topic) {
-    const el = document.getElementById('ntfy-topic');
-    if (el) el.value = topic;
-    updateNtfyIndicator(topic);
-  }
-  if (gasUrl) {
-    const el = document.getElementById('gas-webapp-url');
-    if (el) el.value = gasUrl;
-  }
+  updateGasDisplay(gasUrl);
 }
 
-// ★ Worker から設定済み状態を確認して表示
-async function loadConfigStatus() {
-  try {
-    const res  = await fetch(`${WORKER_URL}/config`);
-    const data = await res.json();
-    // Claude APIキー
-    const ckEl = document.getElementById('claude-key-status');
-    if (ckEl) {
-      ckEl.className = 'set-indicator ' + (data.claudeKeySet ? 'ok' : 'none');
-      ckEl.textContent = data.claudeKeySet ? '✓ 設定済み' : '未設定';
-    }
-    // GAS URL
-    const guEl = document.getElementById('gas-url-status');
-    if (guEl) {
-      guEl.className = 'set-indicator ' + (data.gasUrlSet ? 'ok' : 'none');
-      guEl.textContent = data.gasUrlSet ? '✓ 設定済み' : '未設定';
-    }
-    // ntfyトピック
-    if (data.ntfyTopic) {
-      updateNtfyIndicator(data.ntfyTopic);
-      const el = document.getElementById('ntfy-topic');
-      if (el && !el.value) el.value = data.ntfyTopic;
-      localStorage.setItem('ntfyTopic', data.ntfyTopic);
-    }
-  } catch(e) {}
-}
-
-function updateNtfyIndicator(topic) {
-  const el = document.getElementById('ntfy-status');
-  if (!el) return;
-  if (topic) {
-    el.className='ntfy-status ok'; el.textContent=`✓ 設定済み：${topic}`;
+// ★ 編集ボタン
+function editField(key) {
+  const row = document.getElementById(key === 'ntfy' ? 'ntfy-edit-row' : 'gas-edit-row');
+  const input = document.getElementById(key === 'ntfy' ? 'ntfy-topic' : 'gas-webapp-url');
+  if (!row || !input) return;
+  row.style.display = 'block';
+  if (key === 'ntfy') {
+    input.value = localStorage.getItem('ntfyTopic') || NTFY_TOPIC_DEFAULT;
   } else {
-    el.className='ntfy-status none'; el.textContent='未設定';
+    input.value = localStorage.getItem('gasWebAppUrl') || '';
+  }
+  input.focus();
+}
+
+// ★ 保存ボタン
+async function saveField(key) {
+  if (key === 'ntfy') {
+    const topic = (document.getElementById('ntfy-topic').value||'').trim() || NTFY_TOPIC_DEFAULT;
+    localStorage.setItem('ntfyTopic', topic);
+    // Workerにも送信
+    fetch(`${WORKER_URL}/ntfy-topic`,{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({topic})}).catch(()=>{});
+    updateNtfyDisplay(topic);
+    document.getElementById('ntfy-edit-row').style.display='none';
+  } else {
+    const url = (document.getElementById('gas-webapp-url').value||'').trim();
+    if (url) {
+      localStorage.setItem('gasWebAppUrl', url);
+      // Workerにも送信
+      fetch(`${WORKER_URL}/set-gas-url`,{method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
+        body:JSON.stringify({url})}).catch(()=>{});
+      updateGasDisplay(url);
+    }
+    document.getElementById('gas-edit-row').style.display='none';
+  }
+}
+
+function updateNtfyDisplay(topic) {
+  const disp = document.getElementById('ntfy-topic-display');
+  const stat = document.getElementById('ntfy-status');
+  if (disp) disp.textContent = topic;
+  if (stat) { stat.className='ntfy-status ok'; stat.textContent=`✓ 設定済み：${topic}`; }
+}
+
+function updateGasDisplay(url) {
+  const disp = document.getElementById('gas-url-display');
+  const stat = document.getElementById('gas-url-status');
+  if (disp) disp.textContent = url || '未設定';
+  if (stat) {
+    stat.className = 'set-indicator ' + (url ? 'ok' : 'none');
+    stat.textContent = url ? '✓ 設定済み' : '未設定';
   }
 }
 
 async function saveSettings() {
-  // ntfyトピック
-  const topic = (document.getElementById('ntfy-topic').value||'').trim();
-  if (topic) {
-    localStorage.setItem('ntfyTopic', topic);
-    fetch(`${WORKER_URL}/ntfy-topic`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({topic})})
-      .then(()=>updateNtfyIndicator(topic)).catch(e=>logErr('PWA',`ntfy設定エラー: ${e.message}`));
-  }
-
-  // Claude APIキー
-  const apiKey = (document.getElementById('claude-api-key').value||'').trim();
-  if (apiKey) {
-    try {
-      const r = await fetch(`${WORKER_URL}/set-claude-key`,{method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
-        body:JSON.stringify({apiKey})});
-      const d = await r.json();
-      const el = document.getElementById('claude-key-status');
-      if (d.ok) { if(el){el.className='set-indicator ok';el.textContent='✓ 設定済み';} }
-      else { if(el){el.className='set-indicator none';el.textContent='エラー: '+d.error;} }
-    } catch(e) { logErr('PWA',`Claude APIキー設定エラー: ${e.message}`); }
-    document.getElementById('claude-api-key').value = ''; // 入力欄をクリア
-  }
-
-  // GAS WebApp URL
-  const gasUrl = (document.getElementById('gas-webapp-url').value||'').trim();
-  if (gasUrl) {
-    localStorage.setItem('gasWebAppUrl', gasUrl);
-    try {
-      const r = await fetch(`${WORKER_URL}/set-gas-url`,{method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
-        body:JSON.stringify({url:gasUrl})});
-      const d = await r.json();
-      const el = document.getElementById('gas-url-status');
-      if (d.ok) { if(el){el.className='set-indicator ok';el.textContent='✓ 設定済み';} }
-      else { if(el){el.className='set-indicator none';el.textContent='エラー: '+d.error;} }
-    } catch(e) { logErr('PWA',`GAS URL設定エラー: ${e.message}`); }
-  }
-
-  // 数値設定
   CFG = {
     view30:+document.getElementById('s-view30').value,
     imgs:  +document.getElementById('s-imgs').value,
@@ -1253,6 +1239,11 @@ async function saveSettings() {
 }
 
 async function loadNtfyStatus() { /* 互換性のため残す */ }
+async function loadConfigStatus() {
+  // GAS URLの表示を更新
+  const gasUrl = localStorage.getItem('gasWebAppUrl') || '';
+  updateGasDisplay(gasUrl);
+}
 
 // ============================================================
 // ERRORS
