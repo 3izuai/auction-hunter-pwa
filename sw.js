@@ -1,15 +1,16 @@
 // ============================================================
-// ヤフオク お宝ハンター - Service Worker
+// Cheapy's Radar - Service Worker
 // ============================================================
 
-const CACHE_NAME = 'auction-hunter-v1';
-const WORKER_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev'; // ★要変更
+const CACHE_NAME = 'cheapys-radar-v2';
+const WORKER_URL = 'https://auction-hunter.3izuai.workers.dev';
 
 // インストール
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(c =>
-      c.addAll(['/', '/index.html', '/icon-192.png'])
+      // ★修正：相対パスでキャッシュ（サブディレクトリ対応）
+      c.addAll(['./index.html']).catch(() => {})
     )
   );
   self.skipWaiting();
