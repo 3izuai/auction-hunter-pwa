@@ -35,7 +35,20 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   z-index:201;
 }
 
-/* ── HEADER ── */
+/* ── HEADER STATUS（GAS死活監視 インライン表示） ── */
+.hdr-status{flex:1;display:flex;align-items:center;gap:5px;
+  padding:0 10px;overflow:hidden}
+.hdr-status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  background:var(--ink3);transition:.3s}
+.hdr-status-dot.ok{background:#4ade80}
+.hdr-status-dot.warn{background:#fbbf24;animation:pulse 1.5s infinite}
+.hdr-status-dot.err{background:#f87171;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hdr-status-text{font-family:'DM Mono',monospace;font-size:10px;
+  color:rgba(245,240,232,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hdr-status-text.ok{color:#4ade80}
+.hdr-status-text.warn{color:#fbbf24}
+.hdr-status-text.err{color:#f87171}
 .hdr{background:var(--ink);padding:10px 16px;
   position:sticky;top:env(safe-area-inset-top,47px);z-index:200;display:flex;align-items:center;justify-content:space-between}
 .logo{display:flex;align-items:center;gap:10px}
@@ -298,7 +311,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .empty-text{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink3)}
 .empty-sub{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.7}
 
-/* ── REJECT / CALENDAR BUTTON ── */
+/* ── EXCLUDE KEYWORD TAGS ── */
+.ex-tag{display:flex;align-items:center;gap:5px;background:var(--red-bg);color:var(--red);
+  border:1px solid var(--red);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700}
+.ex-tag-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;
+  line-height:1;padding:0;margin-left:2px}
 .action-row{display:flex;gap:6px;margin-top:6px}
 .action-row>.open-btn{flex:1;margin-top:0}
 .reject-btn{display:flex;align-items:center;justify-content:center;gap:5px;
@@ -341,16 +358,21 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <div class="logo-sub">bargain hunter system</div>
     </div>
   </div>
+  <!-- ★ GASステータス：ロゴ右・更新ボタン左 -->
+  <div class="hdr-status" id="hdr-status">
+    <div class="hdr-status-dot" id="hdr-status-dot"></div>
+    <div class="hdr-status-text" id="hdr-status-text">確認中...</div>
+  </div>
   <div class="hdr-actions">
     <div class="hdr-btn" onclick="refreshAll()" title="更新">↺</div>
   </div>
 </div>
 
-<!-- STATUS BAR（GASの死活監視） -->
-<div class="status-bar" id="status-bar">
-  <div class="status-dot" id="status-dot"></div>
-  <div class="status-text" id="status-text">状態を確認中...</div>
-  <div class="status-time" id="status-time"></div>
+<!-- STATUS BAR を非表示（ヘッダーに統合） -->
+<div id="status-bar" style="display:none">
+  <div id="status-dot"></div>
+  <div id="status-text"></div>
+  <div id="status-time"></div>
 </div>
 
 <!-- TABS -->
@@ -449,9 +471,21 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </div>
 
 
-    <!-- 行動スコア -->
+    <!-- 除外キーワード -->
     <div class="set-card">
-      <div class="set-title">行動スコア設定</div>
+      <div class="set-title">🚫 除外キーワード（全条件に適用）</div>
+      <div class="set-desc" style="font-size:12px;color:var(--ink3);margin-bottom:10px">
+        タイトルにこのキーワードが含まれる商品を非表示にします
+      </div>
+      <div id="exclude-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px">
+        <input class="fi" id="exclude-input" type="text" placeholder="例：初心者セット" style="flex:1"
+          onkeydown="if(event.key==='Enter')addExcludeKw()">
+        <button class="stamp-btn" onclick="addExcludeKw()" style="padding:10px 14px;font-size:13px">追加</button>
+      </div>
+    </div>
+
+
       <div class="set-row">
         <div><div class="set-key">30秒以上閲覧</div><div class="set-desc">アプリを30秒以上見た</div></div>
         <div style="display:flex;align-items:center"><input class="set-num" id="s-view30" type="number" min="0" max="50"><span class="set-unit">pt</span></div>
@@ -576,7 +610,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 <script>
 // ============================================================
-const WORKER_URL   = 'https://auction-hunter.3izuai.workers.dev/';
+const WORKER_URL   = 'https://auction-hunter.3izuai.workers.dev';
 const API_SECRET   = 'yuuta0424';
 
 // ★修正：デフォルト設定
@@ -597,7 +631,8 @@ let behaviorState = JSON.parse(localStorage.getItem('behaviorState') || '{}');
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   applySettingsUI();
-  restoreSettingsFromStorage(); // ★ntfyトピック等をlocalStorageから復元
+  restoreSettingsFromStorage();
+  renderExcludeTags(); // ★除外キーワードタグを描画
   updateErrBadge();
   await Promise.all([loadItems(), loadConditions()]);
   checkHeartbeat();
@@ -658,7 +693,9 @@ async function loadItems() {
 function refreshAll() { loadItems(); checkHeartbeat(); }
 
 function renderItems(items) {
-  const filtered = curPF === 'all' ? items : items.filter(i => (i.platform||'yahoo') === curPF);
+  // 除外キーワードフィルター適用後にプラットフォームフィルター
+  const excl    = applyExcludeFilter(items);
+  const filtered = curPF === 'all' ? excl : excl.filter(i => (i.platform||'yahoo') === curPF);
   const el = document.getElementById('item-list');
   if (!filtered.length) {
     el.innerHTML = `<div class="empty"><span class="empty-icon">🦦</span>
@@ -858,23 +895,42 @@ async function checkHeartbeat() {
   try {
     const res  = await fetch(`${WORKER_URL}/heartbeat`);
     const data = await res.json();
+
+    // ヘッダーのインラインステータス更新
+    const hdot = document.getElementById('hdr-status-dot');
+    const htxt = document.getElementById('hdr-status-text');
+
+    // 旧ステータスバー（非表示だが互換性のために更新）
     const dot  = document.getElementById('status-dot');
     const txt  = document.getElementById('status-text');
     const time = document.getElementById('status-time');
 
     if (!data.lastRun) {
-      dot.className='status-dot'; txt.textContent='まだ巡回を実行していません'; return;
+      if(hdot) { hdot.className='hdr-status-dot'; }
+      if(htxt) { htxt.className='hdr-status-text'; htxt.textContent='未実行'; }
+      return;
     }
-    const h = data.hoursAgo;
-    if (data.status==='ok') {
-      dot.className='status-dot ok'; txt.textContent='GAS巡回：正常動作中';
-    } else if (data.status==='warning') {
-      dot.className='status-dot warn'; txt.textContent=`GAS巡回：${h}時間前が最終実行（要確認）`;
+    const h   = data.hoursAgo;
+    const ago = h < 1 ? `${Math.round(h*60)}分前` : `${h}時間前`;
+
+    if (data.status === 'ok') {
+      if(hdot) hdot.className='hdr-status-dot ok';
+      if(htxt) { htxt.className='hdr-status-text ok'; htxt.textContent=`GAS 正常動作中 ${ago}`; }
+      if(dot)  dot.className='status-dot ok';
+      if(txt)  txt.textContent='GAS巡回：正常動作中';
+    } else if (data.status === 'warning') {
+      if(hdot) hdot.className='hdr-status-dot warn';
+      if(htxt) { htxt.className='hdr-status-text warn'; htxt.textContent=`GAS 要確認 ${ago}`; }
+      if(dot)  dot.className='status-dot warn';
+      if(txt)  txt.textContent=`GAS巡回：${ago}が最終実行（要確認）`;
     } else {
-      dot.className='status-dot stop'; txt.textContent='⚠ GAS巡回が停止している可能性があります';
-      logErr('GAS', `巡回停止の可能性。最終実行: ${data.lastRun}（${h}時間前）`);
+      if(hdot) hdot.className='hdr-status-dot err';
+      if(htxt) { htxt.className='hdr-status-text err'; htxt.textContent=`GAS 停止中 ${ago}`; }
+      if(dot)  dot.className='status-dot stop';
+      if(txt)  txt.textContent='⚠ GAS巡回が停止している可能性があります';
+      logErr('GAS', `巡回停止の可能性。最終実行: ${data.lastRun}（${ago}）`);
     }
-    time.textContent = h < 1 ? '数分前' : `${h}時間前`;
+    if(time) time.textContent = ago;
   } catch(e) { /* 通信エラーは無視 */ }
 }
 
@@ -1057,8 +1113,49 @@ function addSugKw(keyword, platform) {
 }
 
 // ============================================================
-// 不要ボタン（スルー登録）
+// 除外キーワード
 // ============================================================
+function loadExcludeKws() {
+  return JSON.parse(localStorage.getItem('excludeKeywords') || '[]');
+}
+function saveExcludeKws(kws) {
+  localStorage.setItem('excludeKeywords', JSON.stringify(kws));
+}
+function renderExcludeTags() {
+  const kws = loadExcludeKws();
+  const el  = document.getElementById('exclude-tags');
+  if (!el) return;
+  el.innerHTML = kws.length
+    ? kws.map((kw, i) =>
+        `<div class="ex-tag">${kw}<button class="ex-tag-del" onclick="removeExcludeKw(${i})">×</button></div>`
+      ).join('')
+    : '<span style="font-size:12px;color:var(--ink3)">まだ設定されていません</span>';
+}
+function addExcludeKw() {
+  const input = document.getElementById('exclude-input');
+  const kw    = (input.value || '').trim();
+  if (!kw) return;
+  const kws = loadExcludeKws();
+  if (!kws.includes(kw)) { kws.push(kw); saveExcludeKws(kws); }
+  input.value = '';
+  renderExcludeTags();
+  renderItems(allItems); // 即反映
+}
+function removeExcludeKw(i) {
+  const kws = loadExcludeKws();
+  kws.splice(i, 1);
+  saveExcludeKws(kws);
+  renderExcludeTags();
+  renderItems(allItems); // 即反映
+}
+function applyExcludeFilter(items) {
+  const kws = loadExcludeKws();
+  if (!kws.length) return items;
+  return items.filter(item => {
+    const title = (item.title || '').toLowerCase();
+    return !kws.some(kw => title.includes(kw.toLowerCase()));
+  });
+}
 async function rejectItem(id, btnEl) {
   await sendFeedback(id, 'bad');
   const card = document.getElementById('card-' + id);
