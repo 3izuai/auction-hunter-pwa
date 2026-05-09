@@ -50,7 +50,37 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .hdr-status-text.warn{color:#fbbf24}
 .hdr-status-text.err{color:#f87171}
 .hdr{background:var(--ink);padding:10px 16px;
-  position:sticky;top:env(safe-area-inset-top,47px);z-index:200;display:flex;align-items:center;justify-content:space-between}
+  display:flex;align-items:center;justify-content:space-between}
+
+/* ── STICKY WRAP ── */
+#sticky-wrap{position:sticky;top:0;z-index:200}
+
+/* ── STATS CLICKABLE ── */
+.stat.clickable{cursor:pointer;border-radius:8px;padding:4px 8px;transition:.15s}
+.stat.clickable:active{background:var(--paper2)}
+.stat.clickable.active{background:var(--blue-bg);outline:1.5px solid var(--blue)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px)+70px);left:50%;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--ink);color:var(--paper);border-radius:20px;
+  padding:9px 18px;font-size:13px;font-family:'DM Mono',monospace;
+  z-index:999;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── SELLER BLOCK ── */
+.card-menu-btn{position:absolute;top:10px;right:10px;width:28px;height:28px;
+  border-radius:50%;background:none;border:none;cursor:pointer;
+  color:var(--ink3);font-size:18px;display:flex;align-items:center;justify-content:center}
+.card-menu-btn:active{background:var(--paper2)}
+.seller-tag{font-size:11px;color:var(--ink3);font-family:'DM Mono',monospace;
+  margin-top:2px;display:flex;align-items:center;gap:4px}
+.seller-block-btn{font-size:10px;color:var(--red);cursor:pointer;text-decoration:underline;
+  background:none;border:none;padding:0;font-family:'DM Mono',monospace}
+
+/* ── SPIN ANIMATION ── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{display:inline-block;animation:spin .7s linear infinite}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:38px;height:38px;border-radius:50%;background:var(--paper);
   display:flex;align-items:center;justify-content:center;font-size:22px;
@@ -347,6 +377,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 </head>
 <body>
 
+<div id="sticky-wrap">
 <div class="safe-spacer"></div>
 
 <!-- HEADER -->
@@ -383,6 +414,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab"     onclick="showTab('settings',this)">設定</button>
   <button class="tab" id="tab-errors" onclick="showTab('errors',this)">エラー</button>
 </div>
+</div><!-- /sticky-wrap -->
+<div class="toast" id="toast"></div>
 
 <!-- ===== RADAR ===== -->
 <div id="sec-items" class="sec on">
@@ -394,10 +427,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <button class="pfc"    onclick="setPF('jimoty',this)"><span class="pf-dot dj"></span>ジモティ</button>
   </div>
   <div class="stats">
-    <div class="stat"><div class="sn" id="st-total">-</div><div class="sl">検出</div></div>
-    <div class="stat"><div class="sn" id="st-watch" style="color:var(--blue)">-</div><div class="sl">ウォッチ</div></div>
-    <div class="stat"><div class="sn" id="st-maybe" style="color:var(--amber)">-</div><div class="sl">いいかも</div></div>
-    <div class="stat"><div class="sn" id="st-bought" style="color:var(--green)">-</div><div class="sl">落札</div></div>
+    <div class="stat clickable" onclick="setStatFilter('all')"   id="sf-all"><div class="sn" id="st-total">-</div><div class="sl">検出</div></div>
+    <div class="stat clickable" onclick="setStatFilter('watch')" id="sf-watch"><div class="sn" id="st-watch" style="color:var(--blue)">-</div><div class="sl">ウォッチ</div></div>
+    <div class="stat clickable" onclick="setStatFilter('maybe')" id="sf-maybe"><div class="sn" id="st-maybe" style="color:var(--amber)">-</div><div class="sl">いいかも</div></div>
+    <div class="stat clickable" onclick="setStatFilter('bought')" id="sf-bought"><div class="sn" id="st-bought" style="color:var(--green)">-</div><div class="sl">落札</div></div>
   </div>
   <div class="list" id="item-list">
     <div class="loader"><span class="otter">🦦</span><div class="loader-text">レーダーを起動中...</div></div>
@@ -701,12 +734,64 @@ async function loadItems() {
   }
 }
 
-function refreshAll() { loadItems(); checkHeartbeat(); }
+async function refreshAll() {
+  const btn = document.querySelector('.hdr-btn');
+  if (btn) { btn.style.animation='spin .7s linear infinite'; btn.style.display='inline-block'; }
+  const before = allItems.length;
+  await Promise.all([loadItems(), loadConditions()]);
+  checkHeartbeat();
+  if (btn) { btn.style.animation=''; btn.textContent='✓'; }
+  const added = Math.max(0, allItems.length - before);
+  showToast(added > 0 ? `✓ ${added}件の新着` : '✓ 最新です');
+  setTimeout(() => { if(btn) btn.textContent='↺'; }, 2000);
+}
+
+function showToast(msg, ms=2200) {
+  const el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), ms);
+}
+
+let curStatFilter = 'all';
+function setStatFilter(f) {
+  curStatFilter = f;
+  ['all','watch','maybe','bought'].forEach(k => {
+    const el = document.getElementById('sf-'+k);
+    if(el) el.classList.toggle('active', k===f);
+  });
+  renderItems(allItems);
+}
+
+function getBlockedSellers() { return JSON.parse(localStorage.getItem('blockedSellers')||'[]'); }
+function saveBlockedSellers(list) { localStorage.setItem('blockedSellers', JSON.stringify(list)); }
+function blockSeller(seller, itemId) {
+  if (!seller || seller==='unknown') {
+    seller = prompt('ブロックする出品者名を入力してください：');
+    if (!seller) return;
+  }
+  const list = getBlockedSellers();
+  if (!list.includes(seller)) { list.push(seller); saveBlockedSellers(list); }
+  allItems = allItems.filter(i => (i.seller||'') !== seller);
+  renderItems(allItems); updateStats(allItems);
+  showToast(`🚫 出品者「${seller}」を非表示`);
+}
+function applySellerFilter(items) {
+  const blocked = new Set(getBlockedSellers());
+  if (!blocked.size) return items;
+  return items.filter(i => !blocked.has(i.seller||''));
+}
 
 function renderItems(items) {
-  // 除外キーワードフィルター適用後にプラットフォームフィルター
-  const excl    = applyExcludeFilter(items);
-  const filtered = curPF === 'all' ? excl : excl.filter(i => (i.platform||'yahoo') === curPF);
+  // 除外KW → 出品者ブロック → プラットフォーム → 統計フィルタ
+  let filtered = applyExcludeFilter(items);
+  filtered = applySellerFilter(filtered);
+  filtered = curPF === 'all' ? filtered : filtered.filter(i => (i.platform||'yahoo') === curPF);
+  if (curStatFilter === 'watch')  filtered = filtered.filter(i => (i.feedback?.rating||i.feedback) === 'watch');
+  if (curStatFilter === 'maybe')  filtered = filtered.filter(i => (i.feedback?.rating||i.feedback) === 'maybe');
+  if (curStatFilter === 'bought') filtered = filtered.filter(i => (i.feedback?.rating||i.feedback) === 'bought');
   const el = document.getElementById('item-list');
   if (!filtered.length) {
     el.innerHTML = `<div class="empty"><span class="empty-icon">🦦</span>
@@ -763,6 +848,7 @@ function renderCard(item, idx) {
       <div class="card-meta">
         入札 ${item.bids||0}件${item.remainText?' ／ '+item.remainText:''}${ae} ／ ${fmtDate(item.foundAt)}
       </div>
+      ${item.seller ? `<div class="seller-tag">出品者: ${item.seller} <button class="seller-block-btn" onclick="blockSeller('${item.seller}','${item.id}')">非表示</button></div>` : `<div class="seller-tag"><button class="seller-block-btn" onclick="blockSeller('unknown','${item.id}')">この出品者を非表示</button></div>`}
       <div class="bbar">
         <div class="bbar-top">
           <span class="bbar-label">行動スコア</span>
@@ -778,7 +864,7 @@ function renderCard(item, idx) {
         <div class="cal-btn" onclick="registerCalendar(${JSON.stringify({id:item.id,title:item.title,price:item.price,url:appUrl,remainHours:item.remainHours,remainText:item.remainText}).replace(/"/g,'&quot;')})">
           📅 ${item.remainHours >= 24 ? 'カレンダー登録' : 'タイマー設定'}
         </div>
-        <div class="reject-btn" onclick="rejectItem('${item.id}',this)">🚫 不要</div>
+        <div class="reject-btn" onclick="rejectItem('${item.id}')">🚫 不要</div>
       </div>
     </div>
   </div>`;
@@ -831,7 +917,8 @@ function trackAction(id, action) {
   }
   if (action==='time' && !b.time) { b.time=true; addBScore(id,'time'); }
   if (action==='open' && !b.open) {
-    b.open=true; addBScore(id,'open'); sendFeedback(id,'watch');
+    b.open=true; addBScore(id,'open');
+    // ★ウォッチ自動登録を削除（明示的なウォッチ操作のみで登録）
   }
   saveBehaviorState();
 }
@@ -1167,10 +1254,23 @@ function applyExcludeFilter(items) {
     return !kws.some(kw => title.includes(kw.toLowerCase()));
   });
 }
-async function rejectItem(id, btnEl) {
-  await sendFeedback(id, 'bad');
+async function rejectItem(id) {
+  sendFeedback(id, 'bad');
   const card = document.getElementById('card-' + id);
-  if (card) card.classList.add('rejected');
+  if (!card) return;
+  card.style.transition   = 'opacity .22s, max-height .35s .18s, margin .35s .18s, padding .35s .18s';
+  card.style.opacity      = '0';
+  card.style.maxHeight    = card.scrollHeight + 'px';
+  card.style.overflow     = 'hidden';
+  await new Promise(r => setTimeout(r, 60));
+  card.style.maxHeight    = '0';
+  card.style.marginBottom = '0';
+  setTimeout(() => {
+    card.remove();
+    allItems = allItems.filter(i => i.id !== id);
+    updateStats(allItems);
+    showToast('🚫 非表示にしました');
+  }, 560);
 }
 
 // ============================================================
