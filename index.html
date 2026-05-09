@@ -25,7 +25,9 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--ink);min-height:100dvh}
 
-/* ── SAFE AREA SPACER（iPhone ノッチ・Dynamic Island対応）── */
+.pfc-soon{opacity:.4;cursor:default;position:relative}
+.pfc-soon::after{content:'準備中';position:absolute;bottom:-14px;left:50%;
+  transform:translateX(-50%);font-size:8px;color:var(--ink3);white-space:nowrap}
 .safe-spacer{
   height:env(safe-area-inset-top,47px);
   min-height:47px;
@@ -422,9 +424,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <div class="pf-bar">
     <button class="pfc on" onclick="setPF('all',this)">すべて</button>
     <button class="pfc"    onclick="setPF('yahoo',this)"><span class="pf-dot dy"></span>ヤフオク</button>
-    <button class="pfc"    onclick="setPF('mercari',this)"><span class="pf-dot dm"></span>メルカリ</button>
-    <button class="pfc"    onclick="setPF('rakuma',this)"><span class="pf-dot dr"></span>ラクマ</button>
-    <button class="pfc"    onclick="setPF('jimoty',this)"><span class="pf-dot dj"></span>ジモティ</button>
+    <button class="pfc pfc-soon" title="準備中">メルカリ</button>
+    <button class="pfc pfc-soon" title="準備中">ラクマ</button>
+    <button class="pfc pfc-soon" title="準備中">ジモティ</button>
   </div>
   <div class="stats">
     <div class="stat clickable" onclick="setStatFilter('all')"   id="sf-all"><div class="sn" id="st-total">-</div><div class="sl">検出</div></div>
@@ -562,6 +564,26 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <div class="set-row">
         <div><div class="set-key">よくない 判定日数</div><div class="set-desc">開いたが出品を開かない日数</div></div>
         <div style="display:flex;align-items:center"><input class="set-num" id="s-skip" type="number" min="1" max="7"><span class="set-unit">日</span></div>
+      </div>
+    </div>
+
+    <!-- 今後の導入予定 -->
+    <div class="set-card">
+      <div class="set-title">🗺️ 今後の導入予定</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--ink2)">
+        <div>📦 <b>メルカリ・ラクマ・ジモティ対応</b></div>
+        <div style="font-size:12px;color:var(--ink3);margin-left:18px;margin-bottom:8px">
+          Pythonクローラーが必要。<b>GitHub Actions</b>を使えば<b>完全無料</b>で動作可能。<br>
+          MacにPython環境を準備後に導入予定。
+        </div>
+        <div>🧠 <b>ウォッチ・入札メールからの学習強化</b></div>
+        <div style="font-size:12px;color:var(--ink3);margin-left:18px;margin-bottom:8px">
+          いいかも傾向の精度向上。
+        </div>
+        <div>🖼️ <b>商品画像からの不要判定</b></div>
+        <div style="font-size:12px;color:var(--ink3);margin-left:18px">
+          Claude Vision APIを使った画像分析（有料）。
+        </div>
       </div>
     </div>
 
@@ -715,7 +737,7 @@ function setPF(p, btn) {
 // ============================================================
 async function loadItems() {
   try {
-    const res  = await fetch(`${WORKER_URL}/items?limit=80`);
+    const res  = await fetch(`${WORKER_URL}/items?limit=80`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
     const data = await res.json();
     allItems   = data.items || [];
     renderItems(allItems);
@@ -767,11 +789,8 @@ function setStatFilter(f) {
 
 function getBlockedSellers() { return JSON.parse(localStorage.getItem('blockedSellers')||'[]'); }
 function saveBlockedSellers(list) { localStorage.setItem('blockedSellers', JSON.stringify(list)); }
-function blockSeller(seller, itemId) {
-  if (!seller || seller==='unknown') {
-    seller = prompt('ブロックする出品者名を入力してください：');
-    if (!seller) return;
-  }
+function blockSeller(seller) {
+  if (!seller) return;
   const list = getBlockedSellers();
   if (!list.includes(seller)) { list.push(seller); saveBlockedSellers(list); }
   allItems = allItems.filter(i => (i.seller||'') !== seller);
@@ -848,7 +867,9 @@ function renderCard(item, idx) {
       <div class="card-meta">
         入札 ${item.bids||0}件${item.remainText?' ／ '+item.remainText:''}${ae} ／ ${fmtDate(item.foundAt)}
       </div>
-      ${item.seller ? `<div class="seller-tag">出品者: ${item.seller} <button class="seller-block-btn" onclick="blockSeller('${item.seller}','${item.id}')">非表示</button></div>` : `<div class="seller-tag"><button class="seller-block-btn" onclick="blockSeller('unknown','${item.id}')">この出品者を非表示</button></div>`}
+      ${item.seller
+        ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="blockSeller('${item.seller}')">× 非表示</button></div>`
+        : ''}
       <div class="bbar">
         <div class="bbar-top">
           <span class="bbar-label">行動スコア</span>
@@ -1037,7 +1058,7 @@ async function checkHeartbeat() {
 // ============================================================
 async function loadConditions() {
   try {
-    const res  = await fetch(`${WORKER_URL}/conditions`);
+    const res  = await fetch(`${WORKER_URL}/conditions`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
     const data = await res.json();
     conditions = data.conditions || [];
     renderConditions();
@@ -1332,7 +1353,7 @@ async function manualScanGmail(mode) {
 }
 async function loadBought() {
   try {
-    const res  = await fetch(`${WORKER_URL}/bought`);
+    const res  = await fetch(`${WORKER_URL}/bought`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
     const data = await res.json();
     const el   = document.getElementById('bought-list');
     const items = data.items||[];
