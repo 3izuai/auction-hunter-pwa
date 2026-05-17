@@ -343,7 +343,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .empty-text{font-family:'Playfair Display',serif;font-size:16px;color:var(--ink3)}
 .empty-sub{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.7}
 
-/* ── EXCLUDE KEYWORD TAGS ── */
+/* ── REMAIN TIME DISPLAY ── */
+.remain-display{font-size:13px;font-weight:700;padding:6px 10px;border-radius:7px;
+  margin-bottom:8px;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px}
+.remain-normal{background:var(--paper2);color:var(--ink2)}
+.remain-soon  {background:var(--amber-bg);color:var(--amber)}
+.remain-urgent{background:var(--red-bg);color:var(--red);animation:pulse 1.5s infinite}
 .ex-tag{display:flex;align-items:center;gap:5px;background:var(--red-bg);color:var(--red);
   border:1px solid var(--red);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700}
 .ex-tag-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;
@@ -517,8 +522,16 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </div>
 
 
-    <!-- 除外キーワード -->
+    <!-- 出品者ブロックリスト -->
     <div class="set-card">
+      <div class="set-title">🚫 出品者ブロックリスト</div>
+      <div id="blocked-seller-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px"></div>
+      <div style="font-size:11px;color:var(--ink3);margin-bottom:6px">
+        カードの「× 非表示」ボタンでも追加できます
+      </div>
+    </div>
+
+
       <div class="set-title">🚫 除外キーワード（全条件に適用）</div>
       <div class="set-desc" style="font-size:12px;color:var(--ink3);margin-bottom:10px">
         タイトルにこのキーワードが含まれる商品を非表示にします
@@ -720,7 +733,7 @@ function showTab(name, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
   document.getElementById('sec-' + name).classList.add('on');
   if (btn) btn.classList.add('on');
-  if (name === 'bought')  loadBought();
+  if (name === 'settings') renderBlockedSellers();
   if (name === 'errors')  renderErrors();
   if (name === 'conditions') renderConditions();
 }
@@ -800,7 +813,25 @@ function blockSeller(seller) {
   renderItems(allItems); updateStats(allItems);
   showToast(`🚫 出品者「${seller}」を非表示`);
 }
-function applySellerFilter(items) {
+function renderBlockedSellers() {
+  const el = document.getElementById('blocked-seller-tags');
+  if (!el) return;
+  const list = getBlockedSellers();
+  el.innerHTML = list.length
+    ? list.map((s, i) =>
+        `<div class="ex-tag">${s}<button class="ex-tag-del" onclick="unblockSeller(${i})">×</button></div>`
+      ).join('')
+    : '<span style="font-size:12px;color:var(--ink3)">ブロック中の出品者なし</span>';
+}
+
+function unblockSeller(i) {
+  const list = getBlockedSellers();
+  list.splice(i, 1);
+  saveBlockedSellers(list);
+  renderBlockedSellers();
+  renderItems(allItems);
+  showToast('✓ ブロック解除しました');
+}
   const blocked = new Set(getBlockedSellers());
   if (!blocked.size) return items;
   return items.filter(i => !blocked.has(i.seller||''));
@@ -868,7 +899,10 @@ function renderCard(item, idx) {
       </div>
       <div class="tags">${tags}</div>
       <div class="card-meta">
-        入札 ${item.bids||0}件${item.remainText?' ／ '+item.remainText:''}${ae} ／ ${fmtDate(item.foundAt)}
+        入札 ${item.bids||0}件 ／ ${fmtDate(item.foundAt)}
+      </div>
+      <div class="remain-display ${(item.remainHours||0)<6?'remain-urgent':(item.remainHours||0)<24?'remain-soon':'remain-normal'}">
+        ${formatRemain(item.remainHours)}${item.autoExtend==='なし'?'　<span class="ae">⚡自動延長なし</span>':''}
       </div>
       ${item.seller
         ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="blockSeller('${item.seller}')">× 非表示</button></div>`
@@ -881,9 +915,9 @@ function renderCard(item, idx) {
         <div class="bbar-track"><div class="bbar-fill${done?' done':''}" id="bfill-${item.id}" style="width:${bpct}%"></div></div>
         <div class="bbar-sigs">${sigs}</div>
       </div>
-      <a href="${appUrl}" target="_blank" rel="noopener" class="open-btn primary" onclick="trackAction('${item.id}','open')">
-        👀 ${openLbl}（ウォッチ登録へ）
-      </a>
+      <div class="open-btn primary" onclick="openYahooApp('${appUrl}','${item.id}');trackAction('${item.id}','open')">
+        📱 ヤフオクアプリで開く
+      </div>
       <div class="action-row">
         <div class="cal-btn" onclick="registerCalendar(${JSON.stringify({id:item.id,title:item.title,price:item.price,url:appUrl,remainHours:item.remainHours,remainText:item.remainText}).replace(/"/g,'&quot;')})">
           📅 ${item.remainHours >= 24 ? 'カレンダー登録' : 'タイマー設定'}
@@ -1527,6 +1561,30 @@ function fmtDate(iso) {
   if (!iso) return '';
   const d=new Date(iso);
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function formatRemain(hours) {
+  if (!hours && hours !== 0) return '';
+  if (hours >= 24) {
+    const d = Math.floor(hours / 24);
+    const h = Math.floor(hours % 24);
+    return `⏳ 残り${d}日${h}時間`;
+  } else if (hours >= 1) {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    return `⚡ 残り${h}時間${m}分`;
+  } else {
+    const m = Math.round(hours * 60);
+    return `🔥 残り${m}分`;
+  }
+}
+
+function openYahooApp(webUrl, itemId) {
+  // Yahoo Japanアプリのスキーム（インストール済みならアプリで開く）
+  const appUrl = `yahoojapan://yauctions/detail?auctionID=${itemId}`;
+  window.location.href = appUrl;
+  // 1.5秒後にアプリが開いていなければSafariで開く
+  setTimeout(() => { window.open(webUrl, '_blank'); }, 1500);
 }
 async function registerSW() {
   if ('serviceWorker' in navigator) {
