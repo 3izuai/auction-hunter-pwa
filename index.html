@@ -753,7 +753,7 @@ function setPF(p, btn) {
 // ============================================================
 async function loadItems() {
   try {
-    const res  = await fetch(`${WORKER_URL}/items?limit=80`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
+    const res  = await fetch(`${WORKER_URL}/items?limit=80`);
     const data = await res.json();
     allItems   = data.items || [];
     renderItems(allItems);
@@ -1095,7 +1095,7 @@ async function checkHeartbeat() {
 // ============================================================
 async function loadConditions() {
   try {
-    const res  = await fetch(`${WORKER_URL}/conditions`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
+    const res  = await fetch(`${WORKER_URL}/conditions`);
     const data = await res.json();
     conditions = data.conditions || [];
     renderConditions();
@@ -1390,7 +1390,7 @@ async function manualScanGmail(mode) {
 }
 async function loadBought() {
   try {
-    const res  = await fetch(`${WORKER_URL}/bought`, {headers:{'Authorization':`Bearer ${API_SECRET}`}});
+    const res  = await fetch(`${WORKER_URL}/bought`);
     const data = await res.json();
     const el   = document.getElementById('bought-list');
     const items = data.items||[];
