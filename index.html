@@ -380,6 +380,76 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   border-radius:5px;margin-top:6px;display:inline-block}
 .set-indicator.ok{background:var(--green-bg);color:var(--green)}
 .set-indicator.none{background:var(--amber-bg);color:var(--amber)}
+
+/* ══ GEAR SECTION — ダークテーマ ══ */
+.g-wrap{background:#02020a;color:#dde4f5;min-height:calc(100dvh - 100px)}
+.g-hdr{background:#07070f;border-bottom:1px solid #16162a;padding:8px 14px;display:flex;align-items:center;gap:8px;overflow:hidden;position:relative;height:50px}
+.g-logo{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#f59e0b;letter-spacing:.06em;white-space:nowrap;flex-shrink:0;line-height:1}
+.g-logo-sub{font-family:'DM Mono',monospace;font-size:7px;color:#4b5563;letter-spacing:.28em;margin-top:2px;white-space:nowrap}
+.g-sweep{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(245,158,11,.08),transparent);animation:gsweep 5s linear infinite}
+@keyframes gsweep{0%{transform:translateX(-200%)}100%{transform:translateX(600%)}}
+.g-chip{display:flex;align-items:center;gap:3px;padding:2px 7px;border-radius:4px;background:#0b0b18;border:1px solid #202038;flex-shrink:0}
+.g-chip-n{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;line-height:1}
+.g-chip-l{font-family:'DM Mono',monospace;font-size:7.5px;color:#4b5563;letter-spacing:.14em}
+.g-ntabs{background:#07070f;display:flex;border-bottom:1px solid #16162a;overflow-x:auto;scrollbar-width:none;padding:0 12px}
+.g-ntabs::-webkit-scrollbar{display:none}
+.g-ntab{background:none;border:none;border-bottom:2px solid transparent;color:#64748b;cursor:pointer;font-size:11px;font-weight:700;padding:9px 12px;white-space:nowrap;transition:.12s;font-family:'Noto Sans JP',sans-serif}
+.g-ntab.on{color:#f59e0b;border-bottom-color:#f59e0b}
+.g-fbar{background:#07070f;padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid #16162a;align-items:center}
+.g-inp{background:#0b0b18;border:1px solid #202038;color:#dde4f5;padding:6px 9px;border-radius:5px;font-size:12px;font-family:'DM Mono',monospace;-webkit-appearance:none;outline:none}
+.g-inp:focus{border-color:#f59e0b}
+.g-twrap{overflow-x:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px)+60px)}
+.g-table{width:100%;border-collapse:collapse;font-size:12px;min-width:660px}
+.g-table th{padding:8px 10px;text-align:left;color:#64748b;font-size:9.5px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid #0e0e1c;background:#07070f}
+.g-table td{padding:7px 10px;border-bottom:1px solid #0a0a14;vertical-align:middle}
+.g-table tr:active td{background:rgba(245,158,11,.04)}
+.g-bd{padding:2px 6px;border-radius:3px;font-size:9.5px;font-weight:700;font-family:'DM Mono',monospace;white-space:nowrap;display:inline-block}
+.g-bd-ok{background:#041208;color:#4ade80;border:1px solid #14532d}
+.g-bd-jk{background:#120b00;color:#fbbf24;border:1px solid #78350f}
+.g-bd-ng{background:#120000;color:#f87171;border:1px solid #7f1d1d}
+.g-board-tag{background:#041208;color:#4ade80;border:1px solid #14532d;padding:2px 6px;border-radius:3px;font-size:9.5px;font-weight:700;font-family:'DM Mono',monospace}
+.g-sc{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;flex-shrink:0;border:2px solid}
+.g-edit-btn{padding:3px 8px;border-radius:4px;border:1px solid #202038;background:transparent;color:#64748b;cursor:pointer;font-size:10px;font-family:'DM Mono',monospace}
+.g-sel-bar{background:#0c0c1c;border:1px solid #92400e;border-radius:8px;padding:8px 12px;margin:8px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.g-ai-wrap{padding:12px;padding-bottom:calc(env(safe-area-inset-bottom,0px)+60px)}
+.g-section-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#f59e0b;margin-bottom:6px}
+.g-ai-box{background:#04040e;border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:14px;margin-top:10px;font-size:12px;line-height:1.9;color:#b0bcdc;white-space:pre-wrap;max-height:400px;overflow-y:auto;font-family:'Noto Sans JP',sans-serif}
+.g-ai-err{border-color:rgba(239,68,68,.4)!important;color:#f87171;font-family:'DM Mono',monospace}
+.g-ai-lbl{font-size:9.5px;color:#f59e0b;margin-bottom:7px;font-family:'DM Mono',monospace;letter-spacing:.12em}
+.g-dots{display:flex;gap:5px;padding:10px 0}
+.g-dot{width:5px;height:5px;border-radius:50%;background:#f59e0b}
+@keyframes gdot{0%,100%{opacity:.2}50%{opacity:1}}
+.g-select-list{max-height:360px;overflow-y:auto;border:1px solid #16162a;border-radius:8px;background:#0b0b18;margin-bottom:10px}
+.g-sel-row{padding:8px 12px;cursor:pointer;border-bottom:1px solid #0a0a14;display:flex;align-items:center;gap:8px}
+.g-sel-row.sel{background:#0f0f20}
+.g-chk{width:13px;height:13px;border-radius:3px;flex-shrink:0;border:2px solid #202038;display:flex;align-items:center;justify-content:center}
+.g-chk.on{background:#f59e0b;border-color:#f59e0b}
+.g-chk-dot{width:5px;height:5px;background:#050508;border-radius:1px}
+.g-style-chip{padding:4px 10px;border-radius:4px;cursor:pointer;font-size:11px;font-family:'DM Mono',monospace;border:1px solid #202038;background:transparent;color:#64748b;transition:.12s;display:inline-block;margin:3px 3px 3px 0}
+.g-style-chip.on{border-color:#92400e;background:#1a0e00;color:#f59e0b}
+.g-score-list{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.g-score-row{display:flex;align-items:center;gap:8px}
+.g-score-bar-wrap{flex:1}
+.g-score-bar-track{height:3px;background:#16162a;border-radius:2px;margin-top:3px}
+.g-score-bar-fill{height:3px;border-radius:2px;transition:width .5s}
+/* Gear buttons */
+.g-btn-pri{padding:8px 18px;border-radius:6px;border:none;background:#f59e0b;color:#050508;cursor:pointer;font-size:12px;font-weight:700;font-family:'Noto Sans JP',sans-serif}
+.g-btn-ghost{padding:8px 14px;border-radius:6px;border:1px solid #202038;background:transparent;color:#94a3b8;cursor:pointer;font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.g-btn-del{padding:8px 14px;border-radius:6px;border:1px solid #92400e;background:#1a0000;color:#f87171;cursor:pointer;font-size:12px;font-weight:700;font-family:'Noto Sans JP',sans-serif}
+.g-btn-sm{padding:5px 12px;border-radius:5px;border:none;background:#f59e0b;color:#050508;cursor:pointer;font-size:11px;font-weight:700;font-family:'Noto Sans JP',sans-serif}
+.g-btn-sm-ghost{padding:5px 10px;border-radius:5px;border:1px solid #202038;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;font-family:'DM Mono',monospace}
+/* Gear modal */
+.gm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:400;display:none;align-items:flex-end}
+.gm-overlay.open{display:flex}
+.gm-modal{background:#0b0b18;border-radius:16px 16px 0 0;border-top:1px solid #16162a;padding:18px 14px calc(env(safe-area-inset-bottom,20px)+18px);width:100%;max-height:92dvh;overflow-y:auto;animation:slideUp .25s ease}
+.gm-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#f59e0b;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.gm-close{width:30px;height:30px;border-radius:50%;background:#0e0e1c;border:1px solid #202038;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:#64748b;line-height:1}
+.gm-label{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-family:'DM Mono',monospace;color:#64748b;display:block;margin-bottom:3px}
+.gm-fi{background:#020209;border:1.5px solid #202038;border-radius:7px;padding:8px 10px;font-size:13px;color:#dde4f5;font-family:'Noto Sans JP',sans-serif;width:100%}
+.gm-fi:focus{outline:none;border-color:#f59e0b}
+.gm-row{display:flex;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.gm-row>*{flex:1;min-width:110px}
+.gm-btns{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
 </style>
 </head>
 <body>
@@ -420,6 +490,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab"     onclick="showTab('bought',this)">落札</button>
   <button class="tab"     onclick="showTab('settings',this)">設定</button>
   <button class="tab" id="tab-errors" onclick="showTab('errors',this)">エラー</button>
+  <button class="tab" onclick="showTab('gear',this)">🎸 機材</button>
 </div>
 </div><!-- /sticky-wrap -->
 <div class="toast" id="toast"></div>
@@ -608,6 +679,43 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 </div>
 
 <!-- ===== ERRORS ===== -->
+<!-- ===== GEAR ===== -->
+<div id="sec-gear" class="sec">
+  <div class="g-wrap" id="g-wrap">
+    <div class="g-hdr">
+      <div class="g-sweep"></div>
+      <div style="flex-shrink:0">
+        <div class="g-logo">GEAR RADAR</div>
+        <div class="g-logo-sub">CHEAPY'S EQUIPMENT</div>
+      </div>
+      <div style="width:1px;height:24px;background:#16162a;flex-shrink:0;margin:0 4px"></div>
+      <div id="g-stat-chips" style="display:flex;gap:5px;flex:1;overflow:hidden;flex-wrap:nowrap"></div>
+      <div style="display:flex;gap:5px;flex-shrink:0;margin-left:4px">
+        <button class="g-btn-sm" onclick="openGearAdd()">＋</button>
+        <button class="g-btn-sm-ghost" onclick="showGearTab('settings',null)">⚙</button>
+      </div>
+    </div>
+    <div class="g-ntabs">
+      <button class="g-ntab on" id="g-ntab-list"     onclick="showGearTab('list',this)">📋 機材一覧</button>
+      <button class="g-ntab"    id="g-ntab-analysis"  onclick="showGearTab('analysis',this)">🤖 AI評価</button>
+      <button class="g-ntab"    id="g-ntab-board"     onclick="showGearTab('board',this)">🎸 ボード提案</button>
+      <button class="g-ntab"    id="g-ntab-settings"  onclick="showGearTab('settings',this)">⚙ 設定</button>
+    </div>
+    <div id="g-content"></div>
+  </div>
+</div>
+
+<!-- 機材編集モーダル -->
+<div class="gm-overlay" id="gear-modal" onclick="closeGearModal(event)">
+  <div class="gm-modal">
+    <div class="gm-title">
+      <span id="gm-title-text">機材を追加</span>
+      <div class="gm-close" onclick="document.getElementById('gear-modal').classList.remove('open')">×</div>
+    </div>
+    <div id="gm-body"></div>
+  </div>
+</div>
+
 <div id="sec-errors" class="sec">
   <div class="err-section">
     <div class="err-header">
@@ -692,6 +800,22 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 <script>
 // ============================================================
+// FETCH WITH TIMEOUT（全通信に適用・タイムアウト修正済み）
+// ============================================================
+async function fetchWithTimeout(url, options = {}, ms = 15000) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, { ...options, signal: ctrl.signal });
+    clearTimeout(timer);
+    return res;
+  } catch(e) {
+    clearTimeout(timer);
+    if (e.name === 'AbortError') throw new Error(`タイムアウト(${ms/1000}秒): Worker/GASが応答しませんでした`);
+    throw e;
+  }
+}
+// ============================================================
 const WORKER_URL   = 'https://auction-hunter.3izuai.workers.dev';
 const API_SECRET   = 'yuuta0424';
 
@@ -733,9 +857,10 @@ function showTab(name, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
   document.getElementById('sec-' + name).classList.add('on');
   if (btn) btn.classList.add('on');
-  if (name === 'settings') renderBlockedSellers();
-  if (name === 'errors')  renderErrors();
+  if (name === 'settings')   renderBlockedSellers();
+  if (name === 'errors')     renderErrors();
   if (name === 'conditions') renderConditions();
+  if (name === 'gear')       { initGear(); renderGearContent(); }
 }
 
 // ============================================================
@@ -753,7 +878,7 @@ function setPF(p, btn) {
 // ============================================================
 async function loadItems() {
   try {
-    const res  = await fetch(`${WORKER_URL}/items?limit=80`);
+    const res  = await fetchWithTimeout(`${WORKER_URL}/items?limit=80`, {}, 15000);
     const data = await res.json();
     allItems   = data.items || [];
     renderItems(allItems);
@@ -1026,10 +1151,10 @@ function checkSkipped() {
 // ============================================================
 async function sendFeedback(itemId, rating) {
   try {
-    await fetch(`${WORKER_URL}/feedback`, {
+    await fetchWithTimeout(`${WORKER_URL}/feedback`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body:JSON.stringify({itemId, rating})
-    });
+    }, 10000);
     const item = allItems.find(i=>i.id===itemId);
     if (item) item.feedback = {rating};
     updateStats(allItems);
@@ -1049,7 +1174,7 @@ function updateStats(items) {
 // ============================================================
 async function checkHeartbeat() {
   try {
-    const res  = await fetch(`${WORKER_URL}/heartbeat`);
+    const res  = await fetchWithTimeout(`${WORKER_URL}/heartbeat`, {}, 10000);
     const data = await res.json();
 
     // ヘッダーのインラインステータス更新
@@ -1095,7 +1220,7 @@ async function checkHeartbeat() {
 // ============================================================
 async function loadConditions() {
   try {
-    const res  = await fetch(`${WORKER_URL}/conditions`);
+    const res  = await fetchWithTimeout(`${WORKER_URL}/conditions`, {}, 15000);
     const data = await res.json();
     conditions = data.conditions || [];
     renderConditions();
@@ -1200,7 +1325,7 @@ async function deleteCond(i) {
 async function saveConditions() {
   localStorage.setItem('conditions',JSON.stringify(conditions));
   try {
-    await fetch(`${WORKER_URL}/conditions`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conditions})});
+    await fetchWithTimeout(`${WORKER_URL}/conditions`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conditions})}, 12000);
   } catch(e) { logErr('PWA',`条件保存エラー: ${e.message}`); }
 }
 
@@ -1234,7 +1359,7 @@ ${existKws.join(', ')||'なし'}
 
   try {
     // ★Worker経由でClaude APIを呼ぶ（認証ヘッダー追加）
-    const res  = await fetch(`${WORKER_URL}/claude-proxy`, {
+    const res  = await fetchWithTimeout(`${WORKER_URL}/claude-proxy`, {
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
       body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000,
@@ -1370,7 +1495,7 @@ async function manualScanGmail(mode) {
   if (statusEl) statusEl.textContent = mode === 'historical' ? '過去90日分をスキャン中...' : '直近30日をスキャン中...';
 
   try {
-    const res  = await fetch(`${WORKER_URL}/scan-gmail`, {
+    const res  = await fetchWithTimeout(`${WORKER_URL}/scan-gmail`, {
       method: 'POST',
       headers: { 'Content-Type':'application/json', 'Authorization':`Bearer ${API_SECRET}` },
       body:    JSON.stringify({ mode }),
@@ -1390,7 +1515,7 @@ async function manualScanGmail(mode) {
 }
 async function loadBought() {
   try {
-    const res  = await fetch(`${WORKER_URL}/bought`);
+    const res  = await fetchWithTimeout(`${WORKER_URL}/bought`, {}, 15000);
     const data = await res.json();
     const el   = document.getElementById('bought-list');
     const items = data.items||[];
@@ -1455,8 +1580,8 @@ async function saveField(key) {
     const topic = (document.getElementById('ntfy-topic').value||'').trim() || NTFY_TOPIC_DEFAULT;
     localStorage.setItem('ntfyTopic', topic);
     // Workerにも送信
-    fetch(`${WORKER_URL}/ntfy-topic`,{method:'POST',
-      headers:{'Content-Type':'application/json'},body:JSON.stringify({topic})}).catch(()=>{});
+    fetchWithTimeout(`${WORKER_URL}/ntfy-topic`,{method:'POST',
+      headers:{'Content-Type':'application/json'},body:JSON.stringify({topic})}, 8000).catch(()=>{});
     updateNtfyDisplay(topic);
     document.getElementById('ntfy-edit-row').style.display='none';
   } else {
@@ -1464,9 +1589,9 @@ async function saveField(key) {
     if (url) {
       localStorage.setItem('gasWebAppUrl', url);
       // Workerにも送信
-      fetch(`${WORKER_URL}/set-gas-url`,{method:'POST',
+      fetchWithTimeout(`${WORKER_URL}/set-gas-url`,{method:'POST',
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${API_SECRET}`},
-        body:JSON.stringify({url})}).catch(()=>{});
+        body:JSON.stringify({url})}, 8000).catch(()=>{});
       updateGasDisplay(url);
     }
     document.getElementById('gas-edit-row').style.display='none';
@@ -1594,6 +1719,469 @@ async function registerSW() {
     } catch(e) { logErr('SW', e.message); }
   }
 }
+
+// ============================================================
+// GEAR MANAGEMENT（音楽機材管理）
+// Gemini 1.5 Flash 無料API / Claudeトークン不使用
+// ============================================================
+
+const GEAR_INIT = [
+  {id:"pv9",  status:"ボードに入れてる",maker:"Providence",     model:"PV-9",    name:"Provolt9",            genre:"パワーサプライ",      desc:"安定電源/ノイズ対策",       country:"",      year:"",           serial:"KN771838",     features:""},
+  {id:"od3",  status:"ボードに入れてる",maker:"BOSS",           model:"OD-3",    name:"OverDrive",           genre:"オーバードライブ",    desc:"自然な歪みの定番OD",        country:"Taiwan",year:"2007年10月", serial:"HW88507",      features:"黒ネジ/PSA"},
+  {id:"md2",  status:"ボードに入れてる",maker:"BOSS",           model:"MD-2",    name:"Mega Distortion",     genre:"ディストーション",    desc:"ヘヴィ系ディストーション",  country:"Taiwan",year:"2004年12月", serial:"LZ75858",      features:"黒ネジ/PSA"},
+  {id:"rowin",status:"ボードに入れてる",maker:"Rowin",          model:"",        name:"NOISE GATE",          genre:"ノイズゲート",        desc:"ノイズカット専用ペダル",     country:"",      year:"",           serial:"",             features:""},
+  {id:"at07", status:"ボードに入れてる",maker:"Tom's Line",     model:"AT-07",   name:"TUNER",               genre:"チューナー",          desc:"クロマチックチューナー",     country:"",      year:"",           serial:"",             features:""},
+  {id:"ge7a", status:"",               maker:"BOSS",           model:"GE-7",    name:"Equalizer '84",       genre:"イコライザー",        desc:"初期型JRC4558DD搭載",       country:"Japan", year:"1984年6月",  serial:"431100",       features:"JRC4558DDツヤあり/黒ラベル/ACA",  appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:7282},
+  {id:"ge7b", status:"",               maker:"BOSS",           model:"GE-7",    name:"Equalizer '85",       genre:"イコライザー",        desc:"前期型JRC4558DD搭載",       country:"Japan", year:"1985年5月",  serial:"549100",       features:"JRC4558DDツヤあり/黒ラベル/ACA",  appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"藤枝ハードオフ",purchasePrice:2200,marketPrice:7282},
+  {id:"mt2",  status:"",               maker:"BOSS",           model:"MT-2",    name:"Metal Zone",          genre:"ディストーション",    desc:"最初期型薄オレンジ文字",    country:"Taiwan",year:"1991年5月",  serial:"AC61217",      features:"銀ラベル/PSA/薄オレンジ文字",     appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:7500},
+  {id:"ce3",  status:"",               maker:"BOSS",           model:"CE-3",    name:"Chorus",              genre:"コーラス",            desc:"後期型ビンテージコーラス",  country:"Taiwan",year:"1989年?",    serial:"B989756",      features:"後期型ノブ/ACA/裏面ラベル欠品",   appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:6305},
+  {id:"ch1",  status:"",               maker:"BOSS",           model:"CH-1",    name:"SUPER Chorus",        genre:"コーラス",            desc:"スルーホール基板コーラス",  country:"Taiwan",year:"1989〜2001年?",serial:"(欠品)",       features:"スルーホール基板/PSA/ピンクラベル",appearance:4,condition:"動作品",   box:"箱有",manual:"取説有",purchaseSource:"ヤフーフリマ"},
+  {id:"cs2",  status:"",               maker:"BOSS",           model:"CS-2",    name:"Compression Sustainer",genre:"コンプレッサー",     desc:"国産初期型コンプ",          country:"Japan", year:"1985年11月", serial:"604300",       features:"黒ラベル/ACA",                    appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:9150},
+  {id:"cs3",  status:"",               maker:"BOSS",           model:"CS-3",    name:"Compression Sustainer",genre:"コンプレッサー",     desc:"後期型・電池劣化あり",       country:"Taiwan",year:"",           serial:"HF37362",      features:"電池ボックス内電池劣化/黒ラベル/ACA",appearance:1,condition:"動作品",box:"箱有",manual:"取説有"},
+  {id:"ns2",  status:"",               maker:"BOSS",           model:"NS-2",    name:"Noise Suppressor",    genre:"ノイズサプレッサー",  desc:"ビンテージノイズ除去",       country:"Japan", year:"1988年6月",  serial:"917469",       features:"銀ラベル/PSA",                    appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:6000},
+  {id:"tw1",  status:"",               maker:"BOSS",           model:"TW-1",    name:"T Wah",               genre:"オートワウ",          desc:"初期型オートワウ希少",       country:"Japan", year:"1981〜1984年?",serial:"(判読不可)",   features:"黒ラベル/ACA/電池内劣化",         appearance:1,condition:"動作品",   box:"箱無",manual:"取説無"},
+  {id:"ml2",  status:"",               maker:"BOSS",           model:"ML-2",    name:"Metal Core",          genre:"ディストーション",    desc:"ダイオードクリップ高歪み",  country:"Taiwan",year:"2008年12月?",serial:"ZV43808",      features:"黒ラベル/PSA",                    appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフーフリマ"},
+  {id:"os2",  status:"",               maker:"BOSS",           model:"OS-2",    name:"Over Drive/Distortion",genre:"OD/ディストーション",desc:"OD/Dis切替可・LED不良",  country:"Taiwan",year:"2002年2月?", serial:"OO53315",      features:"銀ラベル/PSA/LED不点灯",          appearance:1,condition:"音出るジャンク"},
+  {id:"ls2",  status:"",               maker:"BOSS",           model:"LS-2",    name:"Line Selector",       genre:"ラインセレクター",   desc:"ABセレクター/ループ切替",   country:"Taiwan",year:"2000年代",   serial:"FW22329",      features:"銀ラベル/PSA",                    appearance:3,condition:"動作品"},
+  {id:"fs5jp",status:"",               maker:"BOSS",           model:"FS-5U",   name:"Footswitch (Japan)",  genre:"フットスイッチ",      desc:"日本製ビンテージ",          country:"Japan", year:"1996年4月?", serial:"GD-99397",     features:"",                                condition:"動作品"},
+  {id:"fs5cn",status:"",               maker:"BOSS",           model:"FS-5U",   name:"Footswitch (China)",  genre:"フットスイッチ",      desc:"中国製フットスイッチ",       country:"China", year:"",           serial:"(無し)",        features:"",                                condition:"動作品"},
+  {id:"ts9",  status:"",               maker:"Ibanez",         model:"TS-9",    name:"Tube Screamer",       genre:"オーバードライブ",    desc:"ミドル強調ビンテージOD",    country:"Japan", year:"1990年代",   serial:"",             features:"TA75558P/ラベル欠品/2ndリイシュー",appearance:2,condition:"動作品",box:"箱無",manual:"取説無",purchaseSource:"ヤフオク"},
+  {id:"jd01", status:"",               maker:"MAXON",          model:"JD-01",   name:"JET DRIVER",          genre:"オーバードライブ",    desc:"希少初期型ジャンク品",       country:"",      year:"1985〜1986年?",serial:"",            features:"LED欠品/ノブ表示欠品/ラベル欠品", appearance:1,condition:"音出るジャンク",box:"箱無",manual:"取説無"},
+  {id:"lbm",  status:"",               maker:"electro-harmonix",model:"",       name:"LITTLE BIG MUFF",     genre:"ファズ",              desc:"米国製初期型ファズ",         country:"USA",   year:"",           serial:"",             features:"初期型/SUSTAIN-TONE-VOLノブ配置", appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"清水ピックアップ",purchasePrice:3300,marketPrice:7000},
+  {id:"mdi",  status:"",               maker:"MXR",            model:"",        name:"bass d.i.+",          genre:"ベースDI/プリアンプ", desc:"ベース用DI・プリアンプ",    country:"",      year:"",           serial:"",             features:"電池フタ欠品",                     appearance:2,condition:"動作品"},
+  {id:"mdc",  status:"",               maker:"MXR",            model:"",        name:"dyna comp",           genre:"コンプレッサー",      desc:"MXRビンテージコンプ",        country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
+  {id:"sky",  status:"",               maker:"tc electronic",  model:"",        name:"SKYSURFER REVERB",    genre:"リバーブ",            desc:"デジタルリバーブ",           country:"China", year:"",           serial:"S180301676CAY",features:"トップマウントジャック",           condition:"動作品"},
+  {id:"rbox", status:"",               maker:"Hughes&Kettner", model:"HUK-RB5", name:"RED BOX5",            genre:"キャビシミュ",        desc:"スピーカーキャビシミュ",    country:"",      year:"",           serial:"",             features:"ファンタム電源対応",               appearance:3,condition:"動作品",   box:"箱有",manual:"取説無"},
+  {id:"pb100",status:"",               maker:"BEHRINGER",      model:"PB100",   name:"PREAMP BOOSTER",      genre:"プリアンプ/ブースター",desc:"プリアンプ/ブースター",   country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
+  {id:"bo100",status:"",               maker:"BEHRINGER",      model:"BO100",   name:"BLUES OVERDRIVE",     genre:"オーバードライブ",    desc:"TSコピー系OD",               country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
+  {id:"ms60b",status:"",               maker:"ZOOM",           model:"MS-60B",  name:"MULTI STOMP Bass",    genre:"マルチエフェクター",  desc:"ベース用マルチペダル",       country:"",      year:"",           serial:"34463",        features:"",                                appearance:3,condition:"動作品",   box:"箱無",manual:"取説無"},
+  {id:"ms50g",status:"",               maker:"ZOOM",           model:"MS-50G",  name:"MULTI STOMP Guitar",  genre:"マルチエフェクター",  desc:"ギター用マルチペダル",       country:"",      year:"",           serial:"",             features:"ジモティES335と共に購入",         appearance:3,condition:"動作品"},
+  {id:"fs01", status:"",               maker:"ZOOM",           model:"FS-01",   name:"Footswitch",          genre:"フットスイッチ",      desc:"ZOOM用フットスイッチ",       country:"China", year:"",           serial:"15051",        features:"",                                condition:"動作品"},
+].map(g=>({appearance:null,condition:"動作品",box:"",manual:"",purchaseSource:"",purchasePrice:null,marketPrice:null,...g,utilityScore:null,aiComment:"",tags:[],researchNotes:"",lastAnalyzed:null}));
+
+// ── State ──
+let gearList   = [];
+let gSel       = [];
+let gFlt       = {status:'all',genre:'all',cond:'all',q:''};
+let gTab       = 'list';
+let gEditIdx   = null;
+let gEditIsNew = false;
+let geminiKey  = '';
+let gAiLoad    = false;
+let gAiResult  = '';
+let gAiErr     = '';
+let gBoardStyle= '';
+let gInited    = false;
+
+function initGear() {
+  if (gInited) return;
+  const saved = localStorage.getItem('cheapy-gear-v1');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      const savedIds = new Set(parsed.map(g => g.id));
+      gearList = [...parsed,...GEAR_INIT.filter(g=>!savedIds.has(g.id))];
+    } catch(_) { gearList = [...GEAR_INIT]; }
+  } else { gearList = [...GEAR_INIT]; }
+  geminiKey = localStorage.getItem('cheapy-gear-gemini') || '';
+  gInited = true;
+}
+
+function saveGear() { localStorage.setItem('cheapy-gear-v1', JSON.stringify(gearList)); }
+
+function showGearTab(name, btn) {
+  gTab = name;
+  document.querySelectorAll('.g-ntab').forEach(t => t.classList.remove('on'));
+  const el = btn || document.getElementById('g-ntab-'+name);
+  if (el) el.classList.add('on');
+  renderGearContent();
+}
+
+function renderGearStats() {
+  const chips = document.getElementById('g-stat-chips');
+  if (!chips) return;
+  const st = {
+    total:  gearList.length,
+    board:  gearList.filter(g=>g.status==='ボードに入れてる').length,
+    work:   gearList.filter(g=>g.condition==='動作品').length,
+    junk:   gearList.filter(g=>g.condition&&g.condition.includes('ジャンク')).length,
+    scored: gearList.filter(g=>g.utilityScore!=null).length,
+  };
+  chips.innerHTML = [['T',st.total,'#f59e0b'],['B',st.board,'#4ade80'],['W',st.work,'#94a3b8'],['J',st.junk,'#f87171'],['AI',st.scored,'#a78bfa']]
+    .map(([l,v,c])=>`<div class="g-chip"><span class="g-chip-n" style="color:${c}">${v}</span><span class="g-chip-l">${l}</span></div>`).join('');
+}
+
+function getGearView() {
+  const genres = [...new Set(gearList.map(g=>g.genre).filter(Boolean))].sort();
+  const conds  = [...new Set(gearList.map(g=>g.condition).filter(Boolean))];
+  const list   = gearList.filter(g=>{
+    if(gFlt.status==='board'  && g.status!=='ボードに入れてる') return false;
+    if(gFlt.status==='stored' && g.status==='ボードに入れてる') return false;
+    if(gFlt.genre!=='all'     && g.genre!==gFlt.genre) return false;
+    if(gFlt.cond!=='all'      && g.condition!==gFlt.cond) return false;
+    if(gFlt.q){ const q=gFlt.q.toLowerCase(); if(!`${g.maker} ${g.name} ${g.model} ${g.genre} ${g.desc}`.toLowerCase().includes(q)) return false; }
+    return true;
+  });
+  return {list, genres, conds};
+}
+
+function renderGearContent() {
+  renderGearStats();
+  const c = document.getElementById('g-content');
+  if (!c) return;
+  if      (gTab==='list')     { c.innerHTML = buildGearList();     applyGearListEvents(); }
+  else if (gTab==='analysis') { c.innerHTML = buildGearAnalysis(); applyGearAnalysisEvents(); }
+  else if (gTab==='board')    { c.innerHTML = buildGearBoard();    applyGearBoardEvents(); }
+  else if (gTab==='settings') { c.innerHTML = buildGearSettings(); applyGearSettingsEvents(); }
+}
+
+// ── LIST ──
+function buildGearList() {
+  const {list,genres,conds} = getGearView();
+  const genreOpts = genres.map(g=>`<option value="${g}"${gFlt.genre===g?' selected':''}>${g}</option>`).join('');
+  const condOpts  = conds.map(c=>`<option value="${c}"${gFlt.cond===c?' selected':''}>${c}</option>`).join('');
+  const allChk    = gSel.length===list.length && list.length>0 ? 'checked' : '';
+  const rows = list.length ? list.map(g=>{
+    const realIdx = gearList.indexOf(g);
+    const sc = g.utilityScore;
+    const scC = sc==null?'#4b5563':sc>=8?'#4ade80':sc>=6?'#fbbf24':sc>=4?'#f59e0b':'#f87171';
+    const condCls = g.condition==='動作品'?'g-bd-ok':g.condition&&g.condition.includes('ジャンク')?'g-bd-jk':'g-bd-ng';
+    return `<tr>
+      <td style="padding:7px 10px"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b"${gSel.includes(g.id)?' checked':''}></td>
+      <td style="padding:7px 10px"><div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC};box-shadow:${sc!=null?'0 0 8px '+scC+'44':'none'}">${sc!=null?sc:'-'}</div></td>
+      <td style="padding:7px 10px;color:#a78bfa;font-weight:700;font-size:12px;white-space:nowrap">${g.maker}</td>
+      <td style="padding:7px 10px;white-space:nowrap">
+        <div style="font-weight:700;font-size:12px;color:#dde4f5">${g.name}</div>
+        ${g.model?`<div style="font-weight:700;font-size:11px;color:#dde4f5;opacity:.8;margin-top:1px">${g.model}</div>`:''}
+      </td>
+      <td style="padding:7px 10px;color:#64748b;font-size:11px;white-space:nowrap">${g.genre}</td>
+      <td style="padding:7px 10px;color:#6b7280;font-size:11px;font-style:italic;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
+      <td style="padding:7px 10px;white-space:nowrap"><span class="g-bd ${condCls}">${g.condition||'—'}</span></td>
+      <td style="padding:7px 10px">${g.status==='ボードに入れてる'?'<span class="g-board-tag">BOARD</span>':'<span style="color:#3d4562;font-size:10px;font-family:monospace">—</span>'}</td>
+      <td style="padding:7px 10px;font-size:11px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
+      <td style="padding:7px 10px;color:#4b5563;font-size:11px;font-family:monospace;white-space:nowrap">${g.purchasePrice?'¥'+g.purchasePrice.toLocaleString():'—'}</td>
+      <td style="padding:7px 10px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
+    </tr>`;
+  }).join('') : `<tr><td colspan="11" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
+
+  return `
+    <div class="g-fbar">
+      <input class="g-inp" id="g-q" placeholder="🔎 検索..." value="${gFlt.q}" style="max-width:170px">
+      <select class="g-inp" id="g-fst" style="max-width:125px">
+        <option value="all"${gFlt.status==='all'?' selected':''}>全状況</option>
+        <option value="board"${gFlt.status==='board'?' selected':''}>ボード中</option>
+        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管中</option>
+      </select>
+      <select class="g-inp" id="g-fgr" style="max-width:168px"><option value="all">全ジャンル</option>${genreOpts}</select>
+      <select class="g-inp" id="g-fcd" style="max-width:140px"><option value="all">全状態</option>${condOpts}</select>
+      <span style="margin-left:auto;font-family:monospace;font-size:11px;color:#4b5563">${list.length} / ${gearList.length}</span>
+    </div>
+    ${gSel.length?`<div class="g-sel-bar"><span style="font-family:monospace;font-size:12px;color:#f59e0b">${gSel.length}台選択中</span><button class="g-btn-sm" onclick="showGearTab('analysis',null)">🤖 AI分析</button><button class="g-btn-sm-ghost" onclick="gSel=[];renderGearContent()">解除</button></div>`:''}
+    <div class="g-twrap"><table class="g-table">
+      <thead><tr>
+        <th><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
+        <th>★</th><th>メーカー</th><th>型番 / モデル名</th><th>ジャンル</th><th>特徴</th><th>状態</th><th>使用</th><th>外観</th><th>価格</th><th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+}
+
+function applyGearListEvents() {
+  const {list} = getGearView();
+  document.getElementById('g-q')?.addEventListener('input',   e=>{gFlt.q=e.target.value;renderGearContent();});
+  document.getElementById('g-fst')?.addEventListener('change', e=>{gFlt.status=e.target.value;renderGearContent();});
+  document.getElementById('g-fgr')?.addEventListener('change', e=>{gFlt.genre=e.target.value;renderGearContent();});
+  document.getElementById('g-fcd')?.addEventListener('change', e=>{gFlt.cond=e.target.value;renderGearContent();});
+  document.getElementById('g-chk-all')?.addEventListener('change', e=>{gSel=e.target.checked?list.map(g=>g.id):[];renderGearContent();});
+  document.querySelectorAll('.g-chkbox').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const id=e.target.dataset.id;
+      gSel=e.target.checked?[...new Set([...gSel,id])]:gSel.filter(i=>i!==id);
+    });
+  });
+  document.querySelectorAll('.g-edit-btn').forEach(b=>{
+    b.addEventListener('click', ()=>openGearEdit(+b.dataset.idx));
+  });
+}
+
+// ── ANALYSIS ──
+function buildGearAnalysis() {
+  const selRows = gearList.map(g=>{
+    const isSel=gSel.includes(g.id), sc=g.utilityScore;
+    const scC=sc==null?'#4b5563':sc>=8?'#4ade80':sc>=6?'#fbbf24':'#f59e0b';
+    return `<div class="g-sel-row${isSel?' sel':''}" data-id="${g.id}" style="border-left:3px solid ${isSel?'#f59e0b':'transparent'}">
+      <div class="g-chk${isSel?' on':''}">${isSel?'<div class="g-chk-dot"></div>':''}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;display:flex;gap:5px;overflow:hidden">
+          <span style="color:#a78bfa;font-size:9px;font-family:monospace;flex-shrink:0">${g.maker}</span>
+          <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.name}</span>
+        </div>
+        <div style="font-size:9px;color:#4b5563;margin-top:1px;font-family:monospace">${g.genre}</div>
+      </div>
+      <div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC}">${sc!=null?sc:'-'}</div>
+    </div>`;
+  }).join('');
+  const scored = gearList.filter(g=>g.utilityScore!=null).sort((a,b)=>b.utilityScore-a.utilityScore);
+  const scoreList = scored.map(g=>{
+    const c=g.utilityScore>=8?'#4ade80':g.utilityScore>=6?'#fbbf24':'#f59e0b';
+    return `<div class="g-score-row">
+      <div class="g-sc" style="border-color:${c};color:${c};box-shadow:0 0 8px ${c}44">${g.utilityScore}</div>
+      <div class="g-score-bar-wrap">
+        <div style="font-size:11px;font-weight:700;display:flex;justify-content:space-between">
+          <span><span style="color:#a78bfa;font-size:9px;font-family:monospace;margin-right:4px">${g.maker}</span>${g.name}</span>
+          ${g.lastAnalyzed?`<span style="font-size:9px;color:#3d4562;font-family:monospace">${g.lastAnalyzed}</span>`:''}
+        </div>
+        <div class="g-score-bar-track"><div class="g-score-bar-fill" style="width:${g.utilityScore*10}%;background:${c}"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="g-ai-wrap">
+    <div class="g-section-title">AI 有用性・シナジー分析</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Gemini 1.5 Flash（無料）使用 · Claudeトークン不使用</div>
+    <div style="display:grid;grid-template-columns:255px 1fr;gap:14px">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:10px;color:#64748b;font-family:monospace">SELECT (${gSel.length})</span>
+          <div style="display:flex;gap:5px">
+            <button class="g-btn-sm-ghost" id="g-sel-all" style="font-size:10px;padding:2px 7px">全</button>
+            <button class="g-btn-sm-ghost" id="g-sel-none" style="font-size:10px;padding:2px 7px">解除</button>
+          </div>
+        </div>
+        <div class="g-select-list" id="g-sel-list">${selRows}</div>
+      </div>
+      <div>
+        <button id="g-analyze-btn" class="g-btn-pri" style="width:100%;padding:12px;font-size:13px;font-family:'Playfair Display',serif;letter-spacing:.06em;border-radius:7px;${gAiLoad||gSel.length===0?'opacity:.6;cursor:not-allowed':''}">
+          ${gAiLoad?'⏳ 分析中...':`ANALYZE${gSel.length>0?' ('+gSel.length+'台)':''}`}
+        </button>
+        ${buildAiOutput()}
+        ${scored.length?`<div style="margin-top:14px;background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:14px"><div style="font-size:9.5px;color:#64748b;margin-bottom:10px;font-family:monospace;letter-spacing:.1em">SCORE BOARD (${scored.length}台)</div><div class="g-score-list">${scoreList}</div></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function applyGearAnalysisEvents() {
+  document.getElementById('g-sel-all')?.addEventListener('click',  ()=>{gSel=gearList.map(g=>g.id);renderGearContent();});
+  document.getElementById('g-sel-none')?.addEventListener('click', ()=>{gSel=[];renderGearContent();});
+  document.querySelectorAll('#g-sel-list .g-sel-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      const id=row.dataset.id;
+      gSel=gSel.includes(id)?gSel.filter(i=>i!==id):[...gSel,id];
+      renderGearContent();
+    });
+  });
+  document.getElementById('g-analyze-btn')?.addEventListener('click', async ()=>{
+    if(gAiLoad||gSel.length===0)return;
+    await doGearAnalyze();
+  });
+}
+
+// ── BOARD ──
+function buildGearBoard() {
+  const styles=['J-POPバッキング','ヘヴィメタル','ファンク/R&B','ブルース','シティポップ','宅録・練習','オールジャンル','アンプレス(DI)'];
+  return `<div class="g-ai-wrap">
+    <div class="g-section-title">AI ボード構成提案</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px">保有機材から最適なシグナルチェーンを提案します（Gemini 無料）</div>
+    <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:14px;margin-bottom:12px">
+      <div style="font-size:9.5px;color:#64748b;margin-bottom:7px;font-family:monospace;letter-spacing:.1em">MUSIC STYLE / 用途</div>
+      <div style="display:flex;gap:8px">
+        <input class="g-inp" id="g-board-inp" style="flex:1" value="${gBoardStyle}" placeholder="例: J-POPバッキング、ヘヴィメタル...">
+        <button id="g-board-btn" class="g-btn-sm" style="white-space:nowrap;${gAiLoad?'opacity:.6;cursor:not-allowed':''}">${gAiLoad?'⏳':'提案'}</button>
+      </div>
+      <div style="margin-top:10px">${styles.map(s=>`<button class="g-style-chip${gBoardStyle===s?' on':''}" data-style="${s}">${s}</button>`).join('')}</div>
+    </div>
+    ${buildAiOutput()}
+  </div>`;
+}
+
+function applyGearBoardEvents() {
+  document.getElementById('g-board-inp')?.addEventListener('input',   e=>{gBoardStyle=e.target.value;});
+  document.getElementById('g-board-inp')?.addEventListener('keydown', e=>{if(e.key==='Enter'&&!gAiLoad)doGearBoard();});
+  document.getElementById('g-board-btn')?.addEventListener('click',   ()=>{if(!gAiLoad)doGearBoard();});
+  document.querySelectorAll('.g-style-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{gBoardStyle=c.dataset.style;renderGearContent();});
+  });
+}
+
+// ── SETTINGS ──
+function buildGearSettings() {
+  return `<div class="g-ai-wrap">
+    <div class="g-section-title">⚙ 設定</div>
+    <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">Gemini API Key（AI機能用・無料）</div>
+      <div style="font-size:11px;color:#64748b;line-height:1.8;margin-bottom:10px">
+        AI機能（有用性評価・ボード提案）に使用します。<br>
+        <span style="color:#4ade80;font-weight:700">完全無料</span> — 15回/分 / 100万トークン/日 / Claudeトークン不使用<br>
+        取得先: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#f59e0b">aistudio.google.com/apikey</a>
+      </div>
+      <input class="g-inp" id="g-gemini-key" type="password" value="${geminiKey}" placeholder="AIzaSy..." style="width:100%;margin-bottom:8px">
+      <div style="font-size:10px;font-family:monospace;color:${geminiKey?'#4ade80':'#64748b'}">${geminiKey?'✓ APIキー設定済み — AI機能が使えます':'⚠ 未設定 — AI機能は使えません'}</div>
+      <button id="g-save-key-btn" class="g-btn-sm" style="margin-top:10px">APIキーを保存</button>
+    </div>
+    <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px">
+      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">データ管理</div>
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px">機材データはlocalStorageに保存されます。</div>
+      <button id="g-reset-btn" class="g-btn-del" style="font-size:12px">初期データにリセット</button>
+    </div>
+  </div>`;
+}
+
+function applyGearSettingsEvents() {
+  document.getElementById('g-save-key-btn')?.addEventListener('click', ()=>{
+    geminiKey = (document.getElementById('g-gemini-key').value||'').trim();
+    localStorage.setItem('cheapy-gear-gemini', geminiKey);
+    showToast(geminiKey?'✓ Gemini APIキーを保存しました':'⚠ APIキーをクリアしました');
+    renderGearContent();
+  });
+  document.getElementById('g-reset-btn')?.addEventListener('click', ()=>{
+    if(!confirm('機材データを初期化しますか？AIスコアや編集内容は失われます。'))return;
+    gearList=[...GEAR_INIT]; gSel=[]; saveGear(); renderGearContent();
+    showToast('↺ 初期データにリセットしました');
+  });
+}
+
+// ── AI Output ──
+function buildAiOutput() {
+  if (!gAiLoad && !gAiResult && !gAiErr) return '';
+  if (gAiLoad) return `<div class="g-ai-box"><div class="g-ai-lbl">// GEMINI PROCESSING...</div><div class="g-dots">${[0,1,2,3,4].map(i=>`<div class="g-dot" style="animation:gdot 1.4s ${i*0.2}s infinite"></div>`).join('')}</div></div>`;
+  if (gAiErr)  return `<div class="g-ai-box g-ai-err"><div class="g-ai-lbl">// ERROR</div>${gAiErr}</div>`;
+  return `<div class="g-ai-box"><div class="g-ai-lbl">// AI OUTPUT — Gemini 1.5 Flash (Free)</div>${gAiResult}</div>`;
+}
+
+// ── Gemini API ──
+async function callGemini(prompt) {
+  if (!geminiKey) throw new Error('Gemini APIキーが未設定です。\n⚙設定タブ → APIキーを入力してください。\n取得 (無料): https://aistudio.google.com/apikey');
+  const res = await fetchWithTimeout(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+    {method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:1000,temperature:0.7}})},
+    30000
+  );
+  if (!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e.error?.message||`Gemini HTTP ${res.status}`); }
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '(応答なし)';
+}
+
+// ── AI Analyze ──
+async function doGearAnalyze() {
+  const items = gearList.filter(g=>gSel.includes(g.id));
+  if (!items.length) return;
+  const all = gearList.map(g=>`${g.maker} ${g.name}(${g.genre})`).join('、');
+  const tgt = items.map(g=>`・${g.maker} ${g.name} ${g.model||''}（${g.genre}、${g.year||'年不明'}、${g.condition}、個体: ${g.features||'特記なし'}）`).join('\n');
+  gAiLoad=true; gAiResult=''; gAiErr=''; renderGearContent();
+  try {
+    const r = await callGemini(`音楽機材専門家として、cheapyの機材コレクションを分析してください。\n\n【全保有機材(${gearList.length}台)】\n${all}\n\n【分析対象】\n${tgt}\n\n1.【有用性スコア(10点満点)】各機材のスコアと根拠2〜3文\n2.【保有機材内でのベストシナジー】シグナルチェーン順で具体的に\n3.【音楽体験向上アイデア】今すぐ試せる使い方・音作り提案\n4.【コンディション・メンテアドバイス】個体情報をもとに\n\n実用的かつ具体的に。`);
+    items.forEach(item=>{
+      const m=r.match(new RegExp(`${item.name}[^\\d]*(\\d+)点`,'i'));
+      if(m){const idx=gearList.indexOf(item);if(idx>=0){gearList[idx].utilityScore=Math.min(10,parseInt(m[1]));gearList[idx].lastAnalyzed=new Date().toLocaleDateString('ja-JP');}}
+    });
+    saveGear(); gAiResult=r;
+  } catch(e) { gAiErr=e.message; }
+  gAiLoad=false; renderGearContent();
+}
+
+// ── AI Board ──
+async function doGearBoard() {
+  const bStyle = (document.getElementById('g-board-inp')?.value||'').trim() || gBoardStyle;
+  gBoardStyle = bStyle;
+  const list = gearList.filter(g=>g.condition!=='ジャンク').map(g=>`・${g.maker} ${g.name}（${g.genre}、${g.condition}${g.status==='ボードに入れてる'?' ★現ボード':''}）`).join('\n');
+  gAiLoad=true; gAiResult=''; gAiErr=''; renderGearContent();
+  try {
+    const r = await callGemini(`音楽機材専門家として、cheapyの保有機材から最適なボードを提案してください。\n\n【保有機材】\n${list}\n\n【希望スタイル】\n${bStyle||'汎用（ジャンル不問）'}\n\n1.【推奨ボード(シグナルチェーン順)】番号付きで\n2.【各機材の役割と推奨ノブ設定】具体的なノブ値を含めて\n3.【実現できるサウンド3〜4パターン】\n4.【別スタイル向け代替案1〜2パターン】`);
+    gAiResult=r;
+  } catch(e) { gAiErr=e.message; }
+  gAiLoad=false; renderGearContent();
+}
+
+// ── Modal: Add/Edit ──
+function buildGearModalBody(item, isNew) {
+  const fi=(key,label,type,opts)=>{
+    const v=item[key]!=null?item[key]:'';
+    if(opts) return `<div><label class="gm-label">${label}</label><select class="gm-fi" data-key="${key}">${opts.map(o=>`<option value="${o}"${String(v)===o?' selected':''}>${o||'—'}</option>`).join('')}</select></div>`;
+    return `<div><label class="gm-label">${label}</label><input class="gm-fi" data-key="${key}" type="${type||'text'}" value="${v}"></div>`;
+  };
+  return `
+    <div class="gm-row">${fi('status','使用状況','text',['ボードに入れてる','保管中','売却予定','修理中',''])}${fi('condition','動作状況','text',['動作品','音出るジャンク','ジャンク','未確認'])}</div>
+    <div class="gm-row">${fi('maker','メーカー')}${fi('model','型番')}</div>
+    <div class="gm-row">${fi('name','モデル名')}${fi('genre','ジャンル')}</div>
+    <div style="margin-bottom:9px">${fi('desc','一言解説（特徴）')}</div>
+    <div class="gm-row">${fi('country','製造国')}${fi('year','製造年')}${fi('serial','シリアルNo.')}</div>
+    <div style="margin-bottom:9px">${fi('features','個体特徴 / パーツ情報')}</div>
+    <div class="gm-row">${fi('appearance','外観ランク(1-5)','number')}${fi('box','箱')}${fi('manual','取説')}</div>
+    <div class="gm-row">${fi('purchaseSource','購入元')}${fi('purchasePrice','購入価格(¥)','number')}${fi('marketPrice','相場価格(¥)','number')}${fi('utilityScore','有用性スコア(1-10)','number')}</div>
+    <div style="margin-bottom:9px">${fi('aiComment','メモ / AIコメント')}</div>
+    <div class="gm-btns">
+      <div>${!isNew?`<button class="g-btn-del" id="gm-del-btn">削除</button>`:''}</div>
+      <div style="display:flex;gap:8px">
+        <button class="g-btn-ghost" onclick="document.getElementById('gear-modal').classList.remove('open')">キャンセル</button>
+        <button class="g-btn-pri" id="gm-save-btn">保存</button>
+      </div>
+    </div>`;
+}
+
+function openGearAdd() {
+  gEditIdx=-1; gEditIsNew=true;
+  const blank={status:'',maker:'',model:'',name:'',genre:'',desc:'',country:'',year:'',serial:'',features:'',appearance:null,condition:'動作品',box:'',manual:'',purchaseSource:'',purchasePrice:null,marketPrice:null,utilityScore:null,aiComment:'',tags:[],researchNotes:'',lastAnalyzed:null};
+  document.getElementById('gm-title-text').textContent='機材を追加';
+  document.getElementById('gm-body').innerHTML=buildGearModalBody(blank,true);
+  document.getElementById('gear-modal').classList.add('open');
+  attachGearModalEvents(blank);
+}
+
+function openGearEdit(idx) {
+  gEditIdx=idx; gEditIsNew=false;
+  document.getElementById('gm-title-text').textContent='機材を編集';
+  document.getElementById('gm-body').innerHTML=buildGearModalBody(gearList[idx],false);
+  document.getElementById('gear-modal').classList.add('open');
+  attachGearModalEvents(gearList[idx]);
+}
+
+function attachGearModalEvents(orig) {
+  document.getElementById('gm-save-btn')?.addEventListener('click', ()=>{
+    const data={...orig};
+    document.querySelectorAll('#gm-body [data-key]').forEach(el=>{
+      const k=el.dataset.key;
+      if(el.tagName==='SELECT'||el.type==='text'){data[k]=el.value;}
+      else if(el.type==='number'){data[k]=el.value===''?null:Number(el.value);}
+    });
+    if(gEditIsNew){
+      data.id='g'+Date.now();
+      if(!data.tags)data.tags=[];
+      if(!data.researchNotes)data.researchNotes='';
+      if(!data.lastAnalyzed)data.lastAnalyzed=null;
+      gearList.push(data);
+    } else {
+      gearList[gEditIdx]={...gearList[gEditIdx],...data};
+    }
+    saveGear();
+    document.getElementById('gear-modal').classList.remove('open');
+    renderGearContent();
+    showToast(gEditIsNew?'✓ 機材を追加しました':'✓ 保存しました');
+  });
+  document.getElementById('gm-del-btn')?.addEventListener('click', ()=>{
+    if(!confirm(`「${orig.maker} ${orig.name}」を削除しますか？`))return;
+    gearList.splice(gEditIdx,1);
+    gSel=gSel.filter(id=>id!==orig.id);
+    saveGear();
+    document.getElementById('gear-modal').classList.remove('open');
+    renderGearContent();
+    showToast('🗑 削除しました');
+  });
+}
+
+function closeGearModal(e) {
+  if(!e||e.target===document.getElementById('gear-modal'))
+    document.getElementById('gear-modal').classList.remove('open');
+}
+
+function logErrWithNotify(source, message) {
+  logErr(source, message);
+  if (message.includes('タイムアウト')||message.includes('停止')) {
+    const topic = localStorage.getItem('ntfyTopic') || NTFY_TOPIC_DEFAULT;
+    fetchWithTimeout(`https://ntfy.sh/${topic}`,{method:'POST',body:`⚠ [${source}] ${message}`,headers:{'Title':'Radar エラー','Priority':'high','Tags':'warning'}},6000).catch(()=>{});
+  }
+}
+
 </script>
 </body>
 </html>
