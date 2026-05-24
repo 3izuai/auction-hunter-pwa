@@ -957,6 +957,7 @@ function unblockSeller(i) {
   renderItems(allItems);
   showToast('✓ ブロック解除しました');
 }
+function applySellerFilter(items) {
   const blocked = new Set(getBlockedSellers());
   if (!blocked.size) return items;
   return items.filter(i => !blocked.has(i.seller||''));
