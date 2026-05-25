@@ -184,27 +184,27 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .ae{color:var(--green);font-weight:700}
 
 /* ── BEHAVIOR BAR ── */
-.bbar{margin-bottom:10px;padding:8px 11px;background:var(--paper2);
+.bbar{margin-bottom:10px;padding:10px 11px;background:var(--paper2);
   border-radius:8px;border:1px solid var(--border)}
-.bbar-top{display:flex;align-items:center;gap:4px;margin-bottom:6px}
-.bbar-label{font-size:9px;color:var(--ink3);font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
-.bbar-sigs-inline{display:flex;flex-wrap:wrap;gap:3px;flex:1;margin:0 6px}
-.bbar-score{font-size:12px;font-weight:700;color:var(--amber);font-family:'DM Mono',monospace;white-space:nowrap;flex-shrink:0}
+.bbar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.bbar-label{font-size:10px;color:var(--ink3);font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.bbar-score{font-size:13px;font-weight:700;color:var(--amber);font-family:'Playfair Display',serif}
 .bbar-score.done{color:var(--green)}
 .bbar-track{height:3px;background:var(--border);border-radius:99px;overflow:hidden}
 .bbar-fill{height:100%;background:var(--amber);border-radius:99px;transition:width .4s ease}
 .bbar-fill.done{background:var(--green)}
+.bbar-sigs{display:flex;flex-wrap:wrap;gap:4px;margin-top:7px}
 .sig{font-size:10px;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace;
   color:var(--ink3);background:var(--paper3);border:1px solid var(--border)}
 .sig.on{color:var(--green);background:var(--green-bg);border-color:rgba(31,107,69,.2)}
 
 /* ── BUTTONS ── */
-.open-btn{display:flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 8px;border-radius:8px;border:1.5px solid var(--border);background:var(--paper2);
-  font-size:12px;font-weight:700;color:var(--ink);text-decoration:none;
-  cursor:pointer;transition:.12s;font-family:'Noto Sans JP',sans-serif}
+.open-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;
+  padding:11px;border-radius:8px;border:1.5px solid var(--border);background:var(--paper2);
+  font-size:13px;font-weight:700;color:var(--ink);text-decoration:none;
+  cursor:pointer;transition:.12s;font-family:'Noto Sans JP',sans-serif;margin-top:6px}
 .open-btn:active{transform:scale(.98)}
-.open-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink);flex:1}
+.open-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .stamp-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;
   padding:7px 14px;border-radius:6px;border:1.5px solid var(--ink);background:var(--ink);
   color:var(--paper);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:.12s}
@@ -344,22 +344,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .empty-sub{font-size:12px;color:var(--ink3);margin-top:6px;line-height:1.7}
 
 /* ── REMAIN TIME DISPLAY ── */
-.remain-display{font-size:12px;font-weight:700;padding:5px 10px;border-radius:7px;
-  margin-bottom:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.remain-end{font-size:11px;font-family:'DM Mono',monospace;opacity:.9}
-.remain-time{margin-left:auto;font-size:12px;font-family:'DM Mono',monospace}
+.remain-display{font-size:13px;font-weight:700;padding:6px 10px;border-radius:7px;
+  margin-bottom:8px;font-family:'DM Mono',monospace;display:flex;align-items:center;gap:6px}
 .remain-normal{background:var(--paper2);color:var(--ink2)}
-.remain-short {background:#FFF8E1;color:#7B5800;border:1px solid #E6A817}
 .remain-soon  {background:var(--amber-bg);color:var(--amber)}
 .remain-urgent{background:var(--red-bg);color:var(--red);animation:pulse 1.5s infinite}
-.short-badge{background:#E6A817;color:#fff;font-size:9px;padding:1px 5px;border-radius:4px;font-family:'DM Mono',monospace;font-weight:700}
-/* score-wrap */
-.score-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;gap:1px}
-.score-lbl{font-size:9px;color:var(--ink3);font-family:'DM Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
-/* 3ボタン1行 */
-.action-row-3{display:flex;gap:5px;margin-top:6px;align-items:stretch}
-.action-row-3 .open-btn{flex:1}
-.action-row-3 .cal-btn,.action-row-3 .reject-btn{flex-shrink:0;width:40px;padding:10px 4px}
 .ex-tag{display:flex;align-items:center;gap:5px;background:var(--red-bg);color:var(--red);
   border:1px solid var(--red);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:700}
 .ex-tag-del{background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;
@@ -407,11 +396,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .g-ntab{background:none;border:none;border-bottom:2px solid transparent;color:#64748b;cursor:pointer;font-size:11px;font-weight:700;padding:9px 12px;white-space:nowrap;transition:.12s;font-family:'Noto Sans JP',sans-serif}
 .g-ntab.on{color:#f59e0b;border-bottom-color:#f59e0b}
 .g-fbar{background:#07070f;padding:9px 12px;display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid #16162a;align-items:center}
-.g-fbar-compact{background:#07070f;padding:6px 12px;display:flex;gap:6px;border-bottom:1px solid #16162a;align-items:center;flex-wrap:nowrap;overflow-x:auto}
 .g-inp{background:#0b0b18;border:1px solid #202038;color:#dde4f5;padding:6px 9px;border-radius:5px;font-size:12px;font-family:'DM Mono',monospace;-webkit-appearance:none;outline:none}
-.g-inp-sm{padding:4px 6px;font-size:11px;min-width:0;flex-shrink:1}
-.g-search-inline{background:#0b0b18;border:1px solid #202038;color:#dde4f5;border-radius:5px;font-size:11px;padding:4px 7px;flex-shrink:0}
-.g-inp:focus,.g-search-inline:focus{border-color:#f59e0b}
+.g-inp:focus{border-color:#f59e0b}
 .g-twrap{overflow-x:auto;padding-bottom:calc(env(safe-area-inset-bottom,0px)+60px)}
 .g-table{width:100%;border-collapse:collapse;font-size:12px;min-width:660px}
 .g-table th{padding:8px 10px;text-align:left;color:#64748b;font-size:9.5px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid #0e0e1c;background:#07070f}
@@ -699,7 +685,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <div class="g-hdr">
       <div class="g-sweep"></div>
       <div style="flex-shrink:0">
-        <div class="g-logo">GEAR</div>
+        <div class="g-logo">GEAR RADAR</div>
+        <div class="g-logo-sub">CHEAPY'S EQUIPMENT</div>
       </div>
       <div style="width:1px;height:24px;background:#16162a;flex-shrink:0;margin:0 4px"></div>
       <div id="g-stat-chips" style="display:flex;gap:5px;flex:1;overflow:hidden;flex-wrap:nowrap"></div>
@@ -711,9 +698,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <div class="g-ntabs">
       <button class="g-ntab on" id="g-ntab-list"     onclick="showGearTab('list',this)">📋 機材一覧</button>
       <button class="g-ntab"    id="g-ntab-analysis"  onclick="showGearTab('analysis',this)">🤖 AI評価</button>
-      <button class="g-ntab"    id="g-ntab-board"     onclick="showGearTab('board',this)">🎸 ボード</button>
-      <button class="g-ntab"    id="g-ntab-settings"  onclick="showGearTab('settings',this)">⚙</button>
-      <input class="g-inp g-search-inline" id="g-q" placeholder="🔎 検索..." value="" style="margin-left:auto;max-width:120px;font-size:11px;padding:4px 7px">
+      <button class="g-ntab"    id="g-ntab-board"     onclick="showGearTab('board',this)">🎸 ボード提案</button>
+      <button class="g-ntab"    id="g-ntab-settings"  onclick="showGearTab('settings',this)">⚙ 設定</button>
     </div>
     <div id="g-content"></div>
   </div>
@@ -1007,6 +993,7 @@ function renderCard(item, idx) {
   const bpct  = Math.min(100, (bs.score / CFG.thresh) * 100);
   const done  = bs.score >= CFG.thresh;
   const buynow = item.buyNow > 0 ? `<span class="buynow"> / 即決¥${item.buyNow.toLocaleString()}</span>` : '';
+  const ae     = item.autoExtend === 'なし' ? `<span class="ae">⚡自動延長なし</span>` : '';
   const tags   = (item.reasons || '').split('/').filter(Boolean).map(r => `<span class="tag tg">${r.trim()}</span>`).join('');
   const imgHtml = item.imageUrl
     ? `<img class="card-img" src="${item.imageUrl}" alt="" loading="lazy" onclick="trackAction('${item.id}','img')">`
@@ -1018,34 +1005,17 @@ function renderCard(item, idx) {
     rakuma:`https://fril.jp/item/${item.id.replace('rakuma_','')}`, jimoty: item.url }[pf] || item.url || '#';
   const openLbl = { yahoo:'ヤフオクで開く', mercari:'メルカリで開く', rakuma:'ラクマで開く', jimoty:'ジモティで開く' }[pf];
 
-  // 残り時間・終了日時
-  const h = item.remainHours || 0;
-  const endInfo = fmtEndDate(h);
-  const remainStr = formatRemain(h);
-  const urgCls = h < 6 ? 'remain-urgent' : h < 24 ? 'remain-soon' : h < 48 ? 'remain-short' : 'remain-normal';
-  const dowStyle = endInfo.dow === '土' ? 'color:#1A5FB4;font-weight:700'
-                 : endInfo.dow === '日' ? 'color:#C0392B;font-weight:700' : '';
-  // 終了日時テキスト（曜日のみ色付き）
-  const endDateHtml = endInfo.text
-    ? endInfo.text.replace(/\(([日月火水木金土])\)/, `(<span style="${dowStyle}">$1</span>)`)
-    : '';
-  // 短期出品バッジ（残り48時間未満）
-  const shortBadge = (h > 0 && h < 48) ? `<span class="short-badge">⚡短期</span>` : '';
-
   return `<div class="card ${pf}" id="card-${item.id}" style="animation-delay:${idx*.04}s" onclick="trackView('${item.id}')">
     ${imgHtml}
     <div class="card-body">
       <div class="card-top">
-        <div class="score-wrap">
-          <div class="score-lbl">出品</div>
-          <svg class="score-svg" viewBox="0 0 48 48">
-            <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--border)" stroke-width="4"/>
-            <circle cx="24" cy="24" r="${r}" fill="none" stroke="${color}" stroke-width="4"
-              stroke-dasharray="${dash} ${circ-dash}" stroke-linecap="round" transform="rotate(-90 24 24)"/>
-            <text x="24" y="29" text-anchor="middle" font-size="13" font-weight="700"
-              fill="${color}" font-family="'Playfair Display',serif">${sc}</text>
-          </svg>
-        </div>
+        <svg class="score-svg" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--border)" stroke-width="4"/>
+          <circle cx="24" cy="24" r="${r}" fill="none" stroke="${color}" stroke-width="4"
+            stroke-dasharray="${dash} ${circ-dash}" stroke-linecap="round" transform="rotate(-90 24 24)"/>
+          <text x="24" y="29" text-anchor="middle" font-size="13" font-weight="700"
+            fill="${color}" font-family="'Playfair Display',serif">${sc}</text>
+        </svg>
         <div class="card-info">
           ${fbBadge}
           <div class="pf-tag pt-${pf}">${pfLbl}</div>
@@ -1055,33 +1025,30 @@ function renderCard(item, idx) {
       </div>
       <div class="tags">${tags}</div>
       <div class="card-meta">
-        入札 ${item.bids||0}件 ／ 出品 ${fmtDate(item.foundAt)}
+        入札 ${item.bids||0}件 ／ ${fmtDate(item.foundAt)}
       </div>
-      <div class="remain-display ${urgCls}">
-        <span class="remain-end">${endDateHtml}</span>
-        <span class="remain-time">${remainStr}</span>
-        ${shortBadge}
-        ${item.autoExtend==='なし'?'<span class="ae">⚡延長なし</span>':''}
+      <div class="remain-display ${(item.remainHours||0)<6?'remain-urgent':(item.remainHours||0)<24?'remain-soon':'remain-normal'}">
+        ${formatRemain(item.remainHours)}${item.autoExtend==='なし'?'　<span class="ae">⚡自動延長なし</span>':''}
       </div>
       ${item.seller
-        ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="event.stopPropagation();blockSeller('${item.seller}')">🚫 非表示</button></div>`
+        ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="blockSeller('${item.seller}')">× 非表示</button></div>`
         : ''}
       <div class="bbar">
         <div class="bbar-top">
           <span class="bbar-label">行動スコア</span>
-          <span class="bbar-sigs-inline">${sigs}</span>
-          <span class="bbar-score${done?' done':''}" id="bscore-${item.id}">${bs.score}/${CFG.thresh}pt${done?' ✓':''}</span>
+          <span class="bbar-score${done?' done':''}" id="bscore-${item.id}">${bs.score}/${CFG.thresh}pt${done?' ✓ いいかも':''}</span>
         </div>
         <div class="bbar-track"><div class="bbar-fill${done?' done':''}" id="bfill-${item.id}" style="width:${bpct}%"></div></div>
+        <div class="bbar-sigs">${sigs}</div>
       </div>
-      <div class="action-row-3">
-        <div class="open-btn primary" onclick="event.stopPropagation();openYahooApp('${appUrl}','${item.id}');trackAction('${item.id}','open')">
-          📱 ${openLbl}
+      <div class="open-btn primary" onclick="openYahooApp('${appUrl}','${item.id}');trackAction('${item.id}','open')">
+        📱 ヤフオクアプリで開く
+      </div>
+      <div class="action-row">
+        <div class="cal-btn" onclick="registerCalendar(${JSON.stringify({id:item.id,title:item.title,price:item.price,url:appUrl,remainHours:item.remainHours,remainText:item.remainText}).replace(/"/g,'&quot;')})">
+          📅 ${item.remainHours >= 24 ? 'カレンダー登録' : 'タイマー設定'}
         </div>
-        <div class="cal-btn" onclick="event.stopPropagation();registerCalendar(${JSON.stringify({id:item.id,title:item.title,price:item.price,url:appUrl,remainHours:item.remainHours,remainText:item.remainText}).replace(/"/g,'&quot;')})">
-          📅
-        </div>
-        <div class="reject-btn" onclick="event.stopPropagation();rejectItem('${item.id}')">🚫</div>
+        <div class="reject-btn" onclick="rejectItem('${item.id}')">🚫 不要</div>
       </div>
     </div>
   </div>`;
@@ -1494,39 +1461,31 @@ async function rejectItem(id) {
 // カレンダー / タイマー登録
 // ============================================================
 function registerCalendar(item) {
-  const remainMs   = (item.remainHours || 0) * 60 * 60 * 1000;
-  const endTime    = new Date(Date.now() + remainMs);
+  const remainMs  = (item.remainHours || 0) * 60 * 60 * 1000;
+  const endTime   = new Date(Date.now() + remainMs);
   const notifyTime = new Date(endTime.getTime() - 30 * 60 * 1000); // 30分前
 
-  if (!item.remainHours || item.remainHours < 0.5) {
-    showToast('残り時間が短すぎます');
+  // 24時間未満 → 残り時間コピー＋タイマー案内
+  if (!item.remainHours || item.remainHours < 24) {
+    const h = Math.floor(item.remainHours || 0);
+    const m = Math.round(((item.remainHours || 0) - h) * 60);
+    const timeStr = h > 0 ? `${h}時間${m}分` : `${m}分`;
+    const msg = `⏰ 残り時間: ${item.remainText || timeStr}\n\n時計アプリのタイマーで設定してください。\n（残り時間をコピーしました）`;
+    navigator.clipboard?.writeText(timeStr).catch(()=>{});
+    alert(msg);
+    trackAction(item.id, 'time');
     return;
   }
-  trackAction(item.id, 'time');
 
-  // ICSファイルを生成してiPhoneネイティブカレンダーに登録
+  // 24時間以上 → Googleカレンダーへ
   const fmt = d => d.toISOString().replace(/[-:.]/g,'').slice(0,15) + 'Z';
-  const uid = `cheapy-${item.id}-${Date.now()}@radar`;
-  const title = `🦦 終了30分前: ${(item.title||'').slice(0,50)}`;
-  const desc = `${item.url||''}\n¥${(item.price||0).toLocaleString()} / 残り${item.remainText||''}`;
-  const ics = [
-    'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//cheapy//radar//EN',
-    'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTART:${fmt(notifyTime)}`,
-    `DTEND:${fmt(new Date(notifyTime.getTime() + 30*60*1000))}`,
-    `SUMMARY:${title}`,
-    `DESCRIPTION:${desc.replace(/\n/g,'\\n')}`,
-    `URL:${item.url||''}`,
-    'END:VEVENT','END:VCALENDAR'
-  ].join('\r\n');
-
-  const blob = new Blob([ics], {type:'text/calendar'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = 'auction.ics'; a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 3000);
-  showToast('📅 カレンダーファイルを開いてください');
+  const calStart = fmt(notifyTime);
+  const calEnd   = fmt(new Date(notifyTime.getTime() + 30 * 60 * 1000));
+  const titleEnc = encodeURIComponent(`🦦 ヤフオク終了30分前: ${(item.title||'').slice(0,40)}`);
+  const detailEnc= encodeURIComponent(`${item.url||''}\n¥${(item.price||0).toLocaleString()} / 残り${item.remainText||''}`);
+  const calUrl   = `https://calendar.google.com/calendar/r/eventedit?text=${titleEnc}&dates=${calStart}/${calEnd}&details=${detailEnc}`;
+  window.open(calUrl, '_blank');
+  trackAction(item.id, 'time');
 }
 
 // ============================================================
@@ -1730,41 +1689,28 @@ function fmtDate(iso) {
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-const DOW_LABEL = ['日','月','火','水','木','金','土'];
-
-function fmtEndDate(hours) {
-  // 残り時間が異常値（14日超）の場合はキャップ表示
-  if (!hours && hours !== 0) return {text:'', dow:'', isWeird: false};
-  const cappedHours = hours > 14*24 ? null : hours;
-  if (!cappedHours) return {text:'?', dow:'', isWeird: true};
-  const end = new Date(Date.now() + cappedHours * 3600000);
-  const dow = DOW_LABEL[end.getDay()];
-  const text = `${end.getMonth()+1}/${end.getDate()}(${dow}) ${end.getHours()}:${String(end.getMinutes()).padStart(2,'0')}`;
-  return {text, dow, isWeird: false};
-}
-
 function formatRemain(hours) {
   if (!hours && hours !== 0) return '';
-  // 異常値キャップ（GASのバグ対策）
-  if (hours > 14*24) return `⚠ 日時不明`;
   if (hours >= 24) {
     const d = Math.floor(hours / 24);
     const h = Math.floor(hours % 24);
-    return `残り${d}日${h}時間`;
+    return `⏳ 残り${d}日${h}時間`;
   } else if (hours >= 1) {
     const h = Math.floor(hours);
     const m = Math.round((hours - h) * 60);
-    return `残り${h}時間${m}分`;
+    return `⚡ 残り${h}時間${m}分`;
   } else {
     const m = Math.round(hours * 60);
-    return `残り${m}分`;
+    return `🔥 残り${m}分`;
   }
 }
 
 function openYahooApp(webUrl, itemId) {
-  // Universal Links経由でアプリが入っていれば自動でアプリ起動
-  // window.location.href だとPWAが閉じる問題があるため window.open を使用
-  window.open(webUrl, '_blank');
+  // Yahoo Japanアプリのスキーム（インストール済みならアプリで開く）
+  const appUrl = `yahoojapan://yauctions/detail?auctionID=${itemId}`;
+  window.location.href = appUrl;
+  // 1.5秒後にアプリが開いていなければSafariで開く
+  setTimeout(() => { window.open(webUrl, '_blank'); }, 1500);
 }
 async function registerSW() {
   if ('serviceWorker' in navigator) {
@@ -1817,7 +1763,7 @@ const GEAR_INIT = [
 // ── State ──
 let gearList   = [];
 let gSel       = [];
-let gFlt       = {status:'all',genre:'all',cond:'all',q:'',maker:'all'};
+let gFlt       = {status:'all',genre:'all',cond:'all',q:''};
 let gTab       = 'list';
 let gEditIdx   = null;
 let gEditIsNew = false;
@@ -1874,7 +1820,6 @@ function getGearView() {
     if(gFlt.status==='stored' && g.status==='ボードに入れてる') return false;
     if(gFlt.genre!=='all'     && g.genre!==gFlt.genre) return false;
     if(gFlt.cond!=='all'      && g.condition!==gFlt.cond) return false;
-    if(gFlt.maker && gFlt.maker!=='all' && g.maker!==gFlt.maker) return false;
     if(gFlt.q){ const q=gFlt.q.toLowerCase(); if(!`${g.maker} ${g.name} ${g.model} ${g.genre} ${g.desc}`.toLowerCase().includes(q)) return false; }
     return true;
   });
@@ -1897,52 +1842,57 @@ function buildGearList() {
   const genreOpts = genres.map(g=>`<option value="${g}"${gFlt.genre===g?' selected':''}>${g}</option>`).join('');
   const condOpts  = conds.map(c=>`<option value="${c}"${gFlt.cond===c?' selected':''}>${c}</option>`).join('');
   const allChk    = gSel.length===list.length && list.length>0 ? 'checked' : '';
-  const rows = list.length ? list.map(g=>{
+  const rows = list.length ? list.map((g, rowIdx)=>{
     const realIdx = gearList.indexOf(g);
     const sc = g.utilityScore;
     const scC = sc==null?'#4b5563':sc>=8?'#4ade80':sc>=6?'#fbbf24':sc>=4?'#f59e0b':'#f87171';
     const condCls = g.condition==='動作品'?'g-bd-ok':g.condition&&g.condition.includes('ジャンク')?'g-bd-jk':'g-bd-ng';
-    return `<tr>
-      <td style="padding:4px 6px"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b"${gSel.includes(g.id)?' checked':''}></td>
-      <td style="padding:4px 6px"><div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC};box-shadow:${sc!=null?'0 0 8px '+scC+'44':'none'}">${sc!=null?sc:'-'}</div></td>
-      <td style="padding:4px 6px;color:#a78bfa;font-weight:700;font-size:11px;white-space:nowrap;cursor:pointer" onclick="gFlt.maker='${g.maker.replace(/'/g,"\\'")}';renderGearContent()">${g.maker}</td>
-      <td style="padding:4px 6px;white-space:nowrap;max-width:120px;overflow:hidden">
-        <div style="font-weight:700;font-size:11px;color:#dde4f5;overflow:hidden;text-overflow:ellipsis">${g.name}</div>
-        ${g.model?`<div style="font-size:10px;color:#dde4f5;opacity:.7;font-family:'DM Mono',monospace">${g.model}</div>`:''}
+    const lineNum = rowIdx + 1;
+    // 10の倍数→赤、5の倍数→青、それ以外→通常
+    const rowBorder = lineNum % 10 === 0
+      ? 'border-bottom:2px solid rgba(220,60,60,.55)'
+      : lineNum % 5 === 0
+        ? 'border-bottom:2px solid rgba(50,130,240,.5)'
+        : '';
+    // 行番号バッジ（5/10の倍数のみ表示）
+    const numBadge = lineNum % 5 === 0
+      ? `<span style="font-size:9px;font-family:monospace;color:${lineNum%10===0?'#f87171':'#60a5fa'};font-weight:700;margin-left:2px">${lineNum}</span>`
+      : '';
+    return `<tr style="${rowBorder}">
+      <td style="padding:7px 10px"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b"${gSel.includes(g.id)?' checked':''}>${numBadge}</td>
+      <td style="padding:7px 10px"><div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC};box-shadow:${sc!=null?'0 0 8px '+scC+'44':'none'}">${sc!=null?sc:'-'}</div></td>
+      <td style="padding:7px 10px;color:#a78bfa;font-weight:700;font-size:12px;white-space:nowrap">${g.maker}</td>
+      <td style="padding:7px 10px;white-space:nowrap">
+        <div style="font-weight:700;font-size:12px;color:#dde4f5">${g.name}</div>
+        ${g.model?`<div style="font-weight:700;font-size:11px;color:#dde4f5;opacity:.8;margin-top:1px">${g.model}</div>`:''}
       </td>
-      <td style="padding:4px 6px;color:#64748b;font-size:10px;white-space:nowrap;cursor:pointer" onclick="gFlt.genre='${g.genre.replace(/'/g,"\\'")}';document.getElementById('g-fgr').value='${g.genre.replace(/'/g,"\\'")}';renderGearContent()">${g.genre}</td>
-      <td style="padding:4px 6px;color:#6b7280;font-size:10px;font-style:italic;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
-      <td style="padding:4px 6px;white-space:nowrap;cursor:pointer" onclick="gFlt.cond='${(g.condition||'').replace(/'/g,"\\'")}';document.getElementById('g-fcd').value='${(g.condition||'').replace(/'/g,"\\'")}';renderGearContent()"><span class="g-bd ${condCls}">${g.condition||'—'}</span></td>
-      <td style="padding:4px 6px">${g.status==='ボードに入れてる'?'<span class="g-board-tag">B</span>':'<span style="color:#3d4562;font-size:10px">—</span>'}</td>
-      <td style="padding:4px 6px;font-size:10px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
-      <td style="padding:4px 6px"><button class="g-edit-btn" data-idx="${realIdx}">✏</button></td>
+      <td style="padding:7px 10px;color:#64748b;font-size:11px;white-space:nowrap">${g.genre}</td>
+      <td style="padding:7px 10px;color:#6b7280;font-size:11px;font-style:italic;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
+      <td style="padding:7px 10px;white-space:nowrap"><span class="g-bd ${condCls}">${g.condition||'—'}</span></td>
+      <td style="padding:7px 10px">${g.status==='ボードに入れてる'?'<span class="g-board-tag">BOARD</span>':'<span style="color:#3d4562;font-size:10px;font-family:monospace">—</span>'}</td>
+      <td style="padding:7px 10px;font-size:11px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
+      <td style="padding:7px 10px;color:#4b5563;font-size:11px;font-family:monospace;white-space:nowrap">${g.purchasePrice?'¥'+g.purchasePrice.toLocaleString():'—'}</td>
+      <td style="padding:7px 10px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="10" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
+  }).join('') : `<tr><td colspan="11" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
 
   return `
-    <div class="g-fbar-compact">
-      <select class="g-inp g-inp-sm" id="g-fst">
+    <div class="g-fbar">
+      <input class="g-inp" id="g-q" placeholder="🔎 検索..." value="${gFlt.q}" style="max-width:170px">
+      <select class="g-inp" id="g-fst" style="max-width:125px">
         <option value="all"${gFlt.status==='all'?' selected':''}>全状況</option>
-        <option value="board"${gFlt.status==='board'?' selected':''}>ボード</option>
-        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管</option>
+        <option value="board"${gFlt.status==='board'?' selected':''}>ボード中</option>
+        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管中</option>
       </select>
-      <select class="g-inp g-inp-sm" id="g-fgr"><option value="all">全ジャンル</option>${genreOpts}</select>
-      <select class="g-inp g-inp-sm" id="g-fcd"><option value="all">全状態</option>${condOpts}</select>
-      <span style="margin-left:auto;font-family:monospace;font-size:10px;color:#4b5563">${list.length}/${gearList.length}</span>
+      <select class="g-inp" id="g-fgr" style="max-width:168px"><option value="all">全ジャンル</option>${genreOpts}</select>
+      <select class="g-inp" id="g-fcd" style="max-width:140px"><option value="all">全状態</option>${condOpts}</select>
+      <span style="margin-left:auto;font-family:monospace;font-size:11px;color:#4b5563">${list.length} / ${gearList.length}</span>
     </div>
     ${gSel.length?`<div class="g-sel-bar"><span style="font-family:monospace;font-size:12px;color:#f59e0b">${gSel.length}台選択中</span><button class="g-btn-sm" onclick="showGearTab('analysis',null)">🤖 AI分析</button><button class="g-btn-sm-ghost" onclick="gSel=[];renderGearContent()">解除</button></div>`:''}
     <div class="g-twrap"><table class="g-table">
       <thead><tr>
-        <th style="width:24px"><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
-        <th style="width:28px">★</th>
-        <th style="cursor:pointer" onclick="gFlt.maker='all';renderGearContent()">メーカー</th>
-        <th>モデル</th>
-        <th style="cursor:pointer" onclick="gFlt.genre='all';document.getElementById('g-fgr').value='all';renderGearContent()">ジャンル</th>
-        <th>特徴</th>
-        <th style="cursor:pointer" onclick="gFlt.cond='all';document.getElementById('g-fcd').value='all';renderGearContent()">状態</th>
-        <th style="width:20px">使</th>
-        <th style="width:36px">外観</th>
-        <th style="width:20px"></th>
+        <th><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
+        <th>★</th><th>メーカー</th><th>型番 / モデル名</th><th>ジャンル</th><th>特徴</th><th>状態</th><th>使用</th><th>外観</th><th>価格</th><th></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
@@ -1950,13 +1900,7 @@ function buildGearList() {
 
 function applyGearListEvents() {
   const {list} = getGearView();
-  // 検索窓はg-ntabs内に常駐
-  const qEl = document.getElementById('g-q');
-  if (qEl && !qEl.dataset.bound) {
-    qEl.dataset.bound='1';
-    qEl.value = gFlt.q;
-    qEl.addEventListener('input', e=>{gFlt.q=e.target.value;renderGearContent();});
-  }
+  document.getElementById('g-q')?.addEventListener('input',   e=>{gFlt.q=e.target.value;renderGearContent();});
   document.getElementById('g-fst')?.addEventListener('change', e=>{gFlt.status=e.target.value;renderGearContent();});
   document.getElementById('g-fgr')?.addEventListener('change', e=>{gFlt.genre=e.target.value;renderGearContent();});
   document.getElementById('g-fcd')?.addEventListener('change', e=>{gFlt.cond=e.target.value;renderGearContent();});
