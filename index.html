@@ -1028,7 +1028,9 @@ function renderCard(item, idx) {
         入札 ${item.bids||0}件 ／ ${fmtDate(item.foundAt)}
       </div>
       <div class="remain-display ${(item.remainHours||0)<6?'remain-urgent':(item.remainHours||0)<24?'remain-soon':'remain-normal'}">
-        ${formatRemain(item.remainHours)}${item.autoExtend==='なし'?'　<span class="ae">⚡自動延長なし</span>':''}
+        <span style="font-size:11px;font-family:'DM Mono',monospace">終了 ${fmtEndHtml(item)}</span>
+        <span style="margin-left:auto;font-size:12px;font-family:'DM Mono',monospace;white-space:nowrap">${formatRemain(liveHours(item))}</span>
+        ${item.autoExtend==='なし'?'<span class="ae" style="font-size:10px">⚡延長なし</span>':''}
       </div>
       ${item.seller
         ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="blockSeller('${item.seller}')">× 非表示</button></div>`
@@ -1683,26 +1685,47 @@ function clearErrors() {
 // ============================================================
 // UTILS
 // ============================================================
+const DOW = ['日','月','火','水','木','金','土'];
+
 function fmtDate(iso) {
   if (!iso) return '';
-  const d=new Date(iso);
+  const d = new Date(iso);
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-function formatRemain(hours) {
-  if (!hours && hours !== 0) return '';
-  if (hours >= 24) {
-    const d = Math.floor(hours / 24);
-    const h = Math.floor(hours % 24);
-    return `⏳ 残り${d}日${h}時間`;
-  } else if (hours >= 1) {
-    const h = Math.floor(hours);
-    const m = Math.round((hours - h) * 60);
-    return `⚡ 残り${h}時間${m}分`;
-  } else {
-    const m = Math.round(hours * 60);
-    return `🔥 残り${m}分`;
-  }
+// ★ 終了日時を取得（endAt優先 → foundAt+remainHours推算）
+function getEndDate(item) {
+  if (item.endAt)    return new Date(item.endAt);
+  if (item.endTime)  return new Date(item.endTime);
+  if (item.remainHours != null && item.foundAt)
+    return new Date(new Date(item.foundAt).getTime() + item.remainHours * 3600000);
+  return null;
+}
+
+// ★ リアルタイム残り時間（endAt基準）
+function liveHours(item) {
+  const end = getEndDate(item);
+  if (!end) return null;
+  return Math.max(0, (end.getTime() - Date.now()) / 3600000);
+}
+
+// ★ 終了日時のHTML（例: 6/15(日) 14:30）曜日に色
+function fmtEndHtml(item) {
+  const end = getEndDate(item);
+  if (!end) return '';
+  const dow  = DOW[end.getDay()];
+  const dStyle = dow==='土' ? 'color:#60a5fa;font-weight:700'
+               : dow==='日' ? 'color:#f87171;font-weight:700' : '';
+  const mm = String(end.getMinutes()).padStart(2,'0');
+  return `${end.getMonth()+1}/${end.getDate()}(<span style="${dStyle}">${dow}</span>) ${end.getHours()}:${mm}`;
+}
+
+function formatRemain(h) {
+  if (h == null) return '';
+  if (h <= 0)    return '🔔 終了';
+  if (h >= 24) { const d=Math.floor(h/24),r=Math.floor(h%24); return `残り${d}日${r}時間`; }
+  if (h >= 1)  { const hr=Math.floor(h),m=Math.round((h-hr)*60); return `残り${hr}時間${m}分`; }
+  return `残り${Math.round(h*60)}分`;
 }
 
 function openYahooApp(webUrl, itemId) {
@@ -1842,57 +1865,60 @@ function buildGearList() {
   const genreOpts = genres.map(g=>`<option value="${g}"${gFlt.genre===g?' selected':''}>${g}</option>`).join('');
   const condOpts  = conds.map(c=>`<option value="${c}"${gFlt.cond===c?' selected':''}>${c}</option>`).join('');
   const allChk    = gSel.length===list.length && list.length>0 ? 'checked' : '';
+
   const rows = list.length ? list.map((g, rowIdx)=>{
     const realIdx = gearList.indexOf(g);
-    const sc = g.utilityScore;
-    const scC = sc==null?'#4b5563':sc>=8?'#4ade80':sc>=6?'#fbbf24':sc>=4?'#f59e0b':'#f87171';
     const condCls = g.condition==='動作品'?'g-bd-ok':g.condition&&g.condition.includes('ジャンク')?'g-bd-jk':'g-bd-ng';
-    const lineNum = rowIdx + 1;
-    // 10の倍数→赤、5の倍数→青、それ以外→通常
-    const rowBorder = lineNum % 10 === 0
-      ? 'border-bottom:2px solid rgba(220,60,60,.55)'
-      : lineNum % 5 === 0
-        ? 'border-bottom:2px solid rgba(50,130,240,.5)'
-        : '';
-    // 行番号バッジ（5/10の倍数のみ表示）
-    const numBadge = lineNum % 5 === 0
-      ? `<span style="font-size:9px;font-family:monospace;color:${lineNum%10===0?'#f87171':'#60a5fa'};font-weight:700;margin-left:2px">${lineNum}</span>`
-      : '';
-    return `<tr style="${rowBorder}">
-      <td style="padding:7px 10px"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b"${gSel.includes(g.id)?' checked':''}>${numBadge}</td>
-      <td style="padding:7px 10px"><div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC};box-shadow:${sc!=null?'0 0 8px '+scC+'44':'none'}">${sc!=null?sc:'-'}</div></td>
-      <td style="padding:7px 10px;color:#a78bfa;font-weight:700;font-size:12px;white-space:nowrap">${g.maker}</td>
-      <td style="padding:7px 10px;white-space:nowrap">
-        <div style="font-weight:700;font-size:12px;color:#dde4f5">${g.name}</div>
-        ${g.model?`<div style="font-weight:700;font-size:11px;color:#dde4f5;opacity:.8;margin-top:1px">${g.model}</div>`:''}
+    const n = rowIdx + 1;
+    // 5行青・10行赤の区切り線
+    const rowStyle = n%10===0 ? 'border-bottom:2.5px solid rgba(248,113,113,.6)'
+                   : n%5===0  ? 'border-bottom:2.5px solid rgba(96,165,250,.5)' : '';
+    // 行番号バッジ（5/10行目のみ）
+    const numBadge = n%5===0
+      ? `<span style="font-size:9px;font-family:monospace;font-weight:700;color:${n%10===0?'#f87171':'#60a5fa'};margin-left:3px">${n}</span>` : '';
+
+    return `<tr style="${rowStyle}">
+      <td style="padding:5px 6px;white-space:nowrap">
+        <input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b;vertical-align:middle"${gSel.includes(g.id)?' checked':''}>${numBadge}
       </td>
-      <td style="padding:7px 10px;color:#64748b;font-size:11px;white-space:nowrap">${g.genre}</td>
-      <td style="padding:7px 10px;color:#6b7280;font-size:11px;font-style:italic;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
-      <td style="padding:7px 10px;white-space:nowrap"><span class="g-bd ${condCls}">${g.condition||'—'}</span></td>
-      <td style="padding:7px 10px">${g.status==='ボードに入れてる'?'<span class="g-board-tag">BOARD</span>':'<span style="color:#3d4562;font-size:10px;font-family:monospace">—</span>'}</td>
-      <td style="padding:7px 10px;font-size:11px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
-      <td style="padding:7px 10px;color:#4b5563;font-size:11px;font-family:monospace;white-space:nowrap">${g.purchasePrice?'¥'+g.purchasePrice.toLocaleString():'—'}</td>
-      <td style="padding:7px 10px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
+      <td style="padding:5px 8px;max-width:200px;min-width:130px">
+        <div style="color:#a78bfa;font-size:10px;font-weight:700">${g.maker||'—'}</div>
+        <div style="color:#dde4f5;font-size:11px;font-weight:700;margin-top:1px">${g.name||'—'}</div>
+        ${g.model?`<div style="color:#64748b;font-size:10px;font-family:'DM Mono',monospace">${g.model}</div>`:''}
+      </td>
+      <td style="padding:5px 8px;max-width:200px">
+        <div style="color:#64748b;font-size:10px;white-space:nowrap">${g.genre||'—'}</div>
+        <div style="color:#6b7280;font-size:10px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px">${g.desc||'—'}</div>
+      </td>
+      <td style="padding:5px 6px;white-space:nowrap"><span class="g-bd ${condCls}" style="font-size:9px;padding:2px 5px">${g.condition||'—'}</span></td>
+      <td style="padding:5px 6px">${g.status==='ボードに入れてる'?'<span class="g-board-tag" style="font-size:9px;padding:2px 5px">B</span>':'<span style="color:#3d4562;font-size:10px">—</span>'}</td>
+      <td style="padding:5px 6px;font-size:11px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
+      <td style="padding:5px 6px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="11" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
+  }).join('') : `<tr><td colspan="7" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
 
   return `
-    <div class="g-fbar">
-      <input class="g-inp" id="g-q" placeholder="🔎 検索..." value="${gFlt.q}" style="max-width:170px">
-      <select class="g-inp" id="g-fst" style="max-width:125px">
+    <div class="g-fbar" style="flex-wrap:nowrap;gap:5px;padding:7px 10px">
+      <select class="g-inp" id="g-fst" style="font-size:11px;padding:4px 5px;min-width:0;flex:1">
         <option value="all"${gFlt.status==='all'?' selected':''}>全状況</option>
-        <option value="board"${gFlt.status==='board'?' selected':''}>ボード中</option>
-        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管中</option>
+        <option value="board"${gFlt.status==='board'?' selected':''}>ボード</option>
+        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管</option>
       </select>
-      <select class="g-inp" id="g-fgr" style="max-width:168px"><option value="all">全ジャンル</option>${genreOpts}</select>
-      <select class="g-inp" id="g-fcd" style="max-width:140px"><option value="all">全状態</option>${condOpts}</select>
-      <span style="margin-left:auto;font-family:monospace;font-size:11px;color:#4b5563">${list.length} / ${gearList.length}</span>
+      <select class="g-inp" id="g-fgr" style="font-size:11px;padding:4px 5px;min-width:0;flex:2"><option value="all">全ジャンル</option>${genreOpts}</select>
+      <select class="g-inp" id="g-fcd" style="font-size:11px;padding:4px 5px;min-width:0;flex:1"><option value="all">全状態</option>${condOpts}</select>
+      <input class="g-inp" id="g-q" placeholder="🔎" value="${gFlt.q}" style="font-size:11px;padding:4px 6px;width:52px;flex-shrink:0">
+      <span style="font-family:monospace;font-size:10px;color:#4b5563;white-space:nowrap;flex-shrink:0">${list.length}/${gearList.length}</span>
     </div>
     ${gSel.length?`<div class="g-sel-bar"><span style="font-family:monospace;font-size:12px;color:#f59e0b">${gSel.length}台選択中</span><button class="g-btn-sm" onclick="showGearTab('analysis',null)">🤖 AI分析</button><button class="g-btn-sm-ghost" onclick="gSel=[];renderGearContent()">解除</button></div>`:''}
     <div class="g-twrap"><table class="g-table">
       <thead><tr>
-        <th><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
-        <th>★</th><th>メーカー</th><th>型番 / モデル名</th><th>ジャンル</th><th>特徴</th><th>状態</th><th>使用</th><th>外観</th><th>価格</th><th></th>
+        <th style="width:30px"><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
+        <th>メーカー / モデル</th>
+        <th>ジャンル / 特徴</th>
+        <th style="white-space:nowrap">状態</th>
+        <th style="white-space:nowrap">使用</th>
+        <th style="white-space:nowrap">外観</th>
+        <th style="width:36px"></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
