@@ -179,12 +179,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .tg{background:var(--green-bg);color:var(--green)}
 .ta{background:var(--amber-bg);color:var(--amber)}
 .tr{background:var(--red-bg);color:var(--red)}
-.card-meta{font-size:11px;color:var(--ink3);margin-bottom:8px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;line-height:1.5}
-.remain-inline{margin-left:auto;font-size:11px;font-family:'DM Mono',monospace;color:var(--ink2);white-space:nowrap;text-align:right}
-.remain-inline.r-soon{color:var(--amber)}
-.remain-inline.r-urgent{color:var(--red);font-weight:700}
-.card-link{color:var(--ink);text-decoration:none;font-weight:600;font-size:13px;line-height:1.4;display:block;margin-bottom:4px}
-.card-link:hover{text-decoration:underline;color:var(--blue)}
+.card-meta{font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.7;
   font-family:'DM Mono',monospace}
 .ae{color:var(--green);font-weight:700}
 
@@ -690,7 +685,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <div class="g-hdr">
       <div class="g-sweep"></div>
       <div style="flex-shrink:0">
-        <div class="g-logo" style="font-size:18px;letter-spacing:.15em">GEAR</div>
+        <div class="g-logo">GEAR RADAR</div>
+        <div class="g-logo-sub">CHEAPY'S EQUIPMENT</div>
       </div>
       <div style="width:1px;height:24px;background:#16162a;flex-shrink:0;margin:0 4px"></div>
       <div id="g-stat-chips" style="display:flex;gap:5px;flex:1;overflow:hidden;flex-wrap:nowrap"></div>
@@ -699,9 +695,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
         <button class="g-btn-sm-ghost" onclick="showGearTab('settings',null)">⚙</button>
       </div>
     </div>
-    <div class="g-ntabs" style="display:flex;align-items:center">
+    <div class="g-ntabs">
       <button class="g-ntab on" id="g-ntab-list"     onclick="showGearTab('list',this)">📋 機材一覧</button>
-      <input  class="g-inp" id="g-q" placeholder="🔎" value="" style="width:60px;padding:4px 6px;font-size:11px;margin-left:4px;flex-shrink:0">
       <button class="g-ntab"    id="g-ntab-analysis"  onclick="showGearTab('analysis',this)">🤖 AI評価</button>
       <button class="g-ntab"    id="g-ntab-board"     onclick="showGearTab('board',this)">🎸 ボード提案</button>
       <button class="g-ntab"    id="g-ntab-settings"  onclick="showGearTab('settings',this)">⚙ 設定</button>
@@ -805,7 +800,65 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 <script>
 // ============================================================
-// FETCH WITH TIMEOUT（全通信に適用・タイムアウト修正済み）
+// ██████╗  █████╗ ██████╗  █████╗ ██████╗
+// ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗
+// ██████╔╝███████║██║  ██║███████║██████╔╝
+// ██╔══██╗██╔══██╗██║  ██║██╔══██╗██╔══██╝
+// ██║  ██║██║  ██║██████╔╝██║  ██║██║
+//   Cheapy's Radar — 設定ファイル
+// ============================================================
+// ★★★ ここだけ編集すれば全設定が反映されます ★★★
+// ============================================================
+const APP_CONFIG = {
+
+  // ── Cloudflare Worker ──────────────────────────────────
+  WORKER_URL:  'https://auction-hunter.3izuai.workers.dev',
+  API_SECRET:  'yuuta0424',
+
+  // ── GAS WebApp URL ─────────────────────────────────────
+  GAS_URL: 'https://script.google.com/macros/s/AKfycbzwek3ZTj4cgtyuFxAgN_v8krnbI-X5CYmDxgCG1DH15V122lB2haKrCWv-O8hfCqJY/exec',
+
+  // ── Googleスプレッドシート ID ──────────────────────────
+  SHEET_ID: '1UO1VEVeabugKRnhsji630ms6JCFHB5DrAn3DSivUYig',
+
+  // ── ntfy.sh プッシュ通知トピック ───────────────────────
+  NTFY_TOPIC: 'Cheapysrader0314',
+
+  // ── 行動スコア設定（各アクションの点数） ───────────────
+  SCORE: {
+    view30:   20,   // 30秒閲覧
+    imgs:     15,   // 画像確認
+    time:     10,   // 時間確認
+    desc:     10,   // 説明確認
+    open:     25,   // アプリ起動
+    thresh:   60,   // 購入検討ライン
+    skipDays:  2,   // スキップ日数
+  },
+
+};
+// ============================================================
+// ★ 起動時にAPP_CONFIGをlocalStorageへ自動適用
+//   （UIで変更した場合はUIの値が優先されます）
+// ============================================================
+(function applyAppConfig() {
+  if (!localStorage.getItem('gasWebAppUrl'))
+    localStorage.setItem('gasWebAppUrl', APP_CONFIG.GAS_URL);
+  if (!localStorage.getItem('ntfyTopic'))
+    localStorage.setItem('ntfyTopic', APP_CONFIG.NTFY_TOPIC);
+  if (!localStorage.getItem('sheetId'))
+    localStorage.setItem('sheetId', APP_CONFIG.SHEET_ID);
+})();
+
+// ── 後方互換のため既存コードが参照する定数を派生 ───────────
+const WORKER_URL         = APP_CONFIG.WORKER_URL;
+const API_SECRET         = APP_CONFIG.API_SECRET;
+const NTFY_TOPIC_DEFAULT = APP_CONFIG.NTFY_TOPIC;
+const SHEET_ID_DEFAULT   = APP_CONFIG.SHEET_ID;
+const DEFAULTS           = APP_CONFIG.SCORE;
+// ============================================================
+
+// ============================================================
+// FETCH WITH TIMEOUT（全通信に適用）
 // ============================================================
 async function fetchWithTimeout(url, options = {}, ms = 15000) {
   const ctrl = new AbortController();
@@ -820,12 +873,8 @@ async function fetchWithTimeout(url, options = {}, ms = 15000) {
     throw e;
   }
 }
-// ============================================================
-const WORKER_URL   = 'https://auction-hunter.3izuai.workers.dev';
-const API_SECRET   = 'yuuta0424';
 
-// ★修正：デフォルト設定
-const DEFAULTS = { view30:20, imgs:15, time:10, desc:10, open:25, thresh:60, skipDays:2 };
+// ★DEFAULTSはAPP_CONFIGから派生（トップのAPP_CONFIG.SCOREを編集してください）
 
 let CFG            = loadCFG();
 let allItems       = [];
@@ -885,8 +934,7 @@ async function loadItems() {
   try {
     const res  = await fetchWithTimeout(`${WORKER_URL}/items?limit=80`, {}, 15000);
     const data = await res.json();
-    const _now = Date.now();
-    allItems   = (data.items || []).map(i => ({...i, _loadedAt: _now}));
+    allItems   = data.items || [];
     renderItems(allItems);
     updateStats(allItems);
   } catch(e) {
@@ -1025,17 +1073,16 @@ function renderCard(item, idx) {
         <div class="card-info">
           ${fbBadge}
           <div class="pf-tag pt-${pf}">${pfLbl}</div>
-          <a class="card-title card-link" href="${appUrl}" target="_blank" onclick="event.stopPropagation();trackAction('${item.id}','open')">${item.title||''}</a>
+          <div class="card-title">${item.title||''}</div>
           <div class="card-price"><b>¥${(item.price||0).toLocaleString()}</b>${buynow}</div>
         </div>
       </div>
       <div class="tags">${tags}</div>
       <div class="card-meta">
         入札 ${item.bids||0}件 ／ ${fmtDate(item.foundAt)}
-        <span class="remain-inline ${liveHours(item)<6?'r-urgent':liveHours(item)<24?'r-soon':''}">
-          終了 ${fmtEndHtml(item)} <b>${formatRemain(liveHours(item))}</b>
-        </span>
-        ${item.autoExtend==='なし'?'<span class="ae">⚡延長なし</span>':''}
+      </div>
+      <div class="remain-display ${(item.remainHours||0)<6?'remain-urgent':(item.remainHours||0)<24?'remain-soon':'remain-normal'}">
+        ${formatRemain(item.remainHours)}${item.autoExtend==='なし'?'　<span class="ae">⚡自動延長なし</span>':''}
       </div>
       ${item.seller
         ? `<div class="seller-tag">出品者: <b>${item.seller}</b> <button class="seller-block-btn" onclick="blockSeller('${item.seller}')">× 非表示</button></div>`
@@ -1545,7 +1592,7 @@ async function loadBought() {
 // ============================================================
 // SETTINGS
 // ============================================================
-const NTFY_TOPIC_DEFAULT = 'Cheapysrader0314'; // ★アプリ更新時ここを変える
+// ★アプリ更新時はトップのAPP_CONFIGを編集してください
 
 function loadCFG() {
   try { return {...DEFAULTS,...JSON.parse(localStorage.getItem('cfg')||'{}')}; } catch { return {...DEFAULTS}; }
@@ -1690,53 +1737,26 @@ function clearErrors() {
 // ============================================================
 // UTILS
 // ============================================================
-const DOW = ['日','月','火','水','木','金','土'];
-
 function fmtDate(iso) {
   if (!iso) return '';
-  const d = new Date(iso);
+  const d=new Date(iso);
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-// 終了日時を取得（endAt優先 → _loadedAt+remainHours → foundAt+remainHours）
-// ヤフオク最大7日間なので7日超はキャップ
-function getEndDate(item) {
-  const MAX_MS = 7 * 24 * 3600000;
-  if (item.endAt)   { const d = new Date(item.endAt); return isNaN(d)?null:d; }
-  if (item.endTime) { const d = new Date(item.endTime); return isNaN(d)?null:d; }
-  if (item.remainHours != null) {
-    // _loadedAt（アプリがデータを受け取った時刻）からの推算が最も正確
-    const base = item._loadedAt || (item.foundAt ? new Date(item.foundAt).getTime() : Date.now());
-    const estEnd = base + item.remainHours * 3600000;
-    const diff   = estEnd - Date.now();
-    if (diff > MAX_MS || diff < -3600000) return null; // 7日超か1時間以上過去 → 信頼できない
-    return new Date(estEnd);
+function formatRemain(hours) {
+  if (!hours && hours !== 0) return '';
+  if (hours >= 24) {
+    const d = Math.floor(hours / 24);
+    const h = Math.floor(hours % 24);
+    return `⏳ 残り${d}日${h}時間`;
+  } else if (hours >= 1) {
+    const h = Math.floor(hours);
+    const m = Math.round((hours - h) * 60);
+    return `⚡ 残り${h}時間${m}分`;
+  } else {
+    const m = Math.round(hours * 60);
+    return `🔥 残り${m}分`;
   }
-  return null;
-}
-
-// リアルタイム残り時間
-function liveHours(item) {
-  const end = getEndDate(item);
-  if (!end) return item.remainHours || null; // フォールバック
-  return Math.max(0, (end.getTime() - Date.now()) / 3600000);
-}
-
-// 終了日時HTML（例: 7/15(火) 14:30）曜日に色
-function fmtEndHtml(item) {
-  const end = getEndDate(item);
-  if (!end) return '—';
-  const dow = DOW[end.getDay()];
-  const cs  = dow==='土'?'color:#60a5fa;font-weight:700':dow==='日'?'color:#f87171;font-weight:700':'';
-  return `${end.getMonth()+1}/${end.getDate()}(<span style="${cs}">${dow}</span>) ${end.getHours()}:${String(end.getMinutes()).padStart(2,'0')}`;
-}
-
-function formatRemain(h) {
-  if (h == null) return '—';
-  if (h <= 0)    return '🔔終了';
-  if (h >= 24)   { const d=Math.floor(h/24),r=Math.floor(h%24); return `${d}日${r}h`; }
-  if (h >= 1)    { const hr=Math.floor(h),m=Math.round((h-hr)*60); return `${hr}h${m}m`; }
-  return `${Math.round(h*60)}分`;
 }
 
 function openYahooApp(webUrl, itemId) {
@@ -1876,52 +1896,46 @@ function buildGearList() {
   const genreOpts = genres.map(g=>`<option value="${g}"${gFlt.genre===g?' selected':''}>${g}</option>`).join('');
   const condOpts  = conds.map(c=>`<option value="${c}"${gFlt.cond===c?' selected':''}>${c}</option>`).join('');
   const allChk    = gSel.length===list.length && list.length>0 ? 'checked' : '';
-
-  const rows = list.length ? list.map((g, ri)=>{
+  const rows = list.length ? list.map(g=>{
     const realIdx = gearList.indexOf(g);
+    const sc = g.utilityScore;
+    const scC = sc==null?'#4b5563':sc>=8?'#4ade80':sc>=6?'#fbbf24':sc>=4?'#f59e0b':'#f87171';
     const condCls = g.condition==='動作品'?'g-bd-ok':g.condition&&g.condition.includes('ジャンク')?'g-bd-jk':'g-bd-ng';
-    const n = ri+1;
-    const rStyle = n%10===0?'border-bottom:2.5px solid rgba(248,113,113,.65)'
-                 : n%5===0 ?'border-bottom:2.5px solid rgba(96,165,250,.55)':'';
-    const badge  = n%5===0?`<span style="font-size:9px;font-family:monospace;font-weight:700;color:${n%10===0?'#f87171':'#60a5fa'};margin-left:2px">${n}</span>`:'';
-    const apStar = g.appearance ? '★'.repeat(g.appearance) : '—';
-    const apCol  = g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562';
-    return `<tr style="${rStyle}">
-      <td style="padding:4px 5px;white-space:nowrap"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b;vertical-align:middle"${gSel.includes(g.id)?' checked':''}>${badge}</td>
-      <td style="padding:4px 7px;min-width:110px;max-width:160px">
-        <div style="color:#a78bfa;font-size:10px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.maker||'—'}</div>
-        <div style="color:#dde4f5;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.name||'—'}</div>
-        ${g.model?`<div style="color:#475569;font-size:9.5px;font-family:'DM Mono',monospace;overflow:hidden;text-overflow:ellipsis">${g.model}</div>`:''}
+    return `<tr>
+      <td style="padding:7px 10px"><input type="checkbox" data-id="${g.id}" class="g-chkbox" style="accent-color:#f59e0b"${gSel.includes(g.id)?' checked':''}></td>
+      <td style="padding:7px 10px"><div class="g-sc" style="border-color:${sc==null?'#202038':scC};color:${scC};box-shadow:${sc!=null?'0 0 8px '+scC+'44':'none'}">${sc!=null?sc:'-'}</div></td>
+      <td style="padding:7px 10px;color:#a78bfa;font-weight:700;font-size:12px;white-space:nowrap">${g.maker}</td>
+      <td style="padding:7px 10px;white-space:nowrap">
+        <div style="font-weight:700;font-size:12px;color:#dde4f5">${g.name}</div>
+        ${g.model?`<div style="font-weight:700;font-size:11px;color:#dde4f5;opacity:.8;margin-top:1px">${g.model}</div>`:''}
       </td>
-      <td style="padding:4px 7px;min-width:90px">
-        <div style="color:#64748b;font-size:10px;white-space:nowrap">${g.genre||'—'}</div>
-        <div style="color:#6b7280;font-size:10px;font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px">${g.desc||'—'}</div>
-      </td>
-      <td style="padding:4px 5px"><span class="g-bd ${condCls}" style="font-size:9px;padding:2px 4px;white-space:nowrap">${g.condition||'—'}</span></td>
-      <td style="padding:4px 5px">${g.status==='ボードに入れてる'?'<span class="g-board-tag" style="font-size:9px;padding:2px 4px">B</span>':'<span style="color:#3d4562;font-size:10px">—</span>'}</td>
-      <td style="padding:4px 5px;font-size:10px;color:${apCol}">${apStar}</td>
-      <td style="padding:4px 5px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
+      <td style="padding:7px 10px;color:#64748b;font-size:11px;white-space:nowrap">${g.genre}</td>
+      <td style="padding:7px 10px;color:#6b7280;font-size:11px;font-style:italic;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.desc||'—'}</td>
+      <td style="padding:7px 10px;white-space:nowrap"><span class="g-bd ${condCls}">${g.condition||'—'}</span></td>
+      <td style="padding:7px 10px">${g.status==='ボードに入れてる'?'<span class="g-board-tag">BOARD</span>':'<span style="color:#3d4562;font-size:10px;font-family:monospace">—</span>'}</td>
+      <td style="padding:7px 10px;font-size:11px;color:${g.appearance>=4?'#4ade80':g.appearance>=3?'#fbbf24':g.appearance?'#f59e0b':'#3d4562'}">${g.appearance?'★'.repeat(g.appearance):'—'}</td>
+      <td style="padding:7px 10px;color:#4b5563;font-size:11px;font-family:monospace;white-space:nowrap">${g.purchasePrice?'¥'+g.purchasePrice.toLocaleString():'—'}</td>
+      <td style="padding:7px 10px"><button class="g-edit-btn" data-idx="${realIdx}">編集</button></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="7" style="padding:40px;text-align:center;color:#3d4562">該当なし</td></tr>`;
+  }).join('') : `<tr><td colspan="11" style="padding:40px;text-align:center;color:#3d4562;font-size:13px">該当する機材がありません</td></tr>`;
 
   return `
-    <div class="g-fbar" style="flex-wrap:nowrap;gap:4px;padding:6px 10px">
-      <select class="g-inp" id="g-fst" style="font-size:11px;padding:3px 5px;flex:1;min-width:0">
+    <div class="g-fbar">
+      <input class="g-inp" id="g-q" placeholder="🔎 検索..." value="${gFlt.q}" style="max-width:170px">
+      <select class="g-inp" id="g-fst" style="max-width:125px">
         <option value="all"${gFlt.status==='all'?' selected':''}>全状況</option>
-        <option value="board"${gFlt.status==='board'?' selected':''}>ボード</option>
-        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管</option>
+        <option value="board"${gFlt.status==='board'?' selected':''}>ボード中</option>
+        <option value="stored"${gFlt.status==='stored'?' selected':''}>保管中</option>
       </select>
-      <select class="g-inp" id="g-fgr" style="font-size:11px;padding:3px 5px;flex:2;min-width:0"><option value="all">全ジャンル</option>${genreOpts}</select>
-      <select class="g-inp" id="g-fcd" style="font-size:11px;padding:3px 5px;flex:1;min-width:0"><option value="all">全状態</option>${condOpts}</select>
-      <span style="font-family:monospace;font-size:10px;color:#4b5563;flex-shrink:0">${list.length}/${gearList.length}</span>
+      <select class="g-inp" id="g-fgr" style="max-width:168px"><option value="all">全ジャンル</option>${genreOpts}</select>
+      <select class="g-inp" id="g-fcd" style="max-width:140px"><option value="all">全状態</option>${condOpts}</select>
+      <span style="margin-left:auto;font-family:monospace;font-size:11px;color:#4b5563">${list.length} / ${gearList.length}</span>
     </div>
     ${gSel.length?`<div class="g-sel-bar"><span style="font-family:monospace;font-size:12px;color:#f59e0b">${gSel.length}台選択中</span><button class="g-btn-sm" onclick="showGearTab('analysis',null)">🤖 AI分析</button><button class="g-btn-sm-ghost" onclick="gSel=[];renderGearContent()">解除</button></div>`:''}
     <div class="g-twrap"><table class="g-table">
       <thead><tr>
-        <th style="width:28px"><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
-        <th>メーカー / モデル</th><th>ジャンル / 特徴</th>
-        <th style="white-space:nowrap">状態</th><th style="white-space:nowrap">使用</th>
-        <th style="white-space:nowrap">外観</th><th style="width:32px"></th>
+        <th><input type="checkbox" id="g-chk-all" style="accent-color:#f59e0b" ${allChk}></th>
+        <th>★</th><th>メーカー</th><th>型番 / モデル名</th><th>ジャンル</th><th>特徴</th><th>状態</th><th>使用</th><th>外観</th><th>価格</th><th></th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
@@ -1929,13 +1943,7 @@ function buildGearList() {
 
 function applyGearListEvents() {
   const {list} = getGearView();
-  // 検索窓はg-ntabs内に常駐なので初回だけバインド
-  const qEl = document.getElementById('g-q');
-  if (qEl && !qEl._bound) {
-    qEl._bound = true;
-    qEl.value  = gFlt.q;
-    qEl.addEventListener('input', e => { gFlt.q = e.target.value; renderGearContent(); });
-  }
+  document.getElementById('g-q')?.addEventListener('input',   e=>{gFlt.q=e.target.value;renderGearContent();});
   document.getElementById('g-fst')?.addEventListener('change', e=>{gFlt.status=e.target.value;renderGearContent();});
   document.getElementById('g-fgr')?.addEventListener('change', e=>{gFlt.genre=e.target.value;renderGearContent();});
   document.getElementById('g-fcd')?.addEventListener('change', e=>{gFlt.cond=e.target.value;renderGearContent();});
@@ -2142,41 +2150,21 @@ async function doGearBoard() {
 
 // ── Modal: Add/Edit ──
 function buildGearModalBody(item, isNew) {
-  const fi = (key, label, type, opts) => {
-    const v = item[key] != null ? item[key] : '';
-    if (opts) return `<div><label class="gm-label">${label}</label><select class="gm-fi" data-key="${key}">${opts.map(o=>`<option value="${o}"${String(v)===o?' selected':''}>${o||'—'}</option>`).join('')}</select></div>`;
+  const fi=(key,label,type,opts)=>{
+    const v=item[key]!=null?item[key]:'';
+    if(opts) return `<div><label class="gm-label">${label}</label><select class="gm-fi" data-key="${key}">${opts.map(o=>`<option value="${o}"${String(v)===o?' selected':''}>${o||'—'}</option>`).join('')}</select></div>`;
     return `<div><label class="gm-label">${label}</label><input class="gm-fi" data-key="${key}" type="${type||'text'}" value="${v}"></div>`;
   };
-  const s = (title) => `<div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:#f59e0b;text-transform:uppercase;font-family:'DM Mono',monospace;margin:12px 0 6px;border-bottom:1px solid #16162a;padding-bottom:3px">${title}</div>`;
   return `
-    ${s('基本情報')}
-    <div class="gm-row">
-      ${fi('status','使用状況','text',['ボードに入れてる','保管中','売却予定','修理中',''])}
-      ${fi('condition','動作状況','text',['動作品','音出るジャンク','ジャンク','未確認',''])}
-    </div>
+    <div class="gm-row">${fi('status','使用状況','text',['ボードに入れてる','保管中','売却予定','修理中',''])}${fi('condition','動作状況','text',['動作品','音出るジャンク','ジャンク','未確認'])}</div>
     <div class="gm-row">${fi('maker','メーカー')}${fi('model','型番')}</div>
-    <div class="gm-row">${fi('name','モデル名')}${fi('genre','エフェクタージャンル')}</div>
-
-    ${s('製造情報')}
-    <div class="gm-row">${fi('country','製造国')}${fi('yearMonth','製造年/月')}${fi('serial','シリアルNo.')}</div>
-    <div class="gm-row">${fi('serialPos','シリアル位置')}${fi('screwType','ネジの種類')}${fi('labelColor','裏面ラベルの色')}</div>
-    <div class="gm-row">${fi('powerType','電源タイプ')}${fi('logo','ロゴ/文字')}${fi('opamp','オペアンプ/パーツ')}</div>
-    <div class="gm-row">${fi('switchType','スイッチ')}</div>
-
-    ${s('個体・外観')}
-    <div style="margin-bottom:9px">${fi('features','個体特徴')}</div>
-    <div style="margin-bottom:9px">${fi('desc','使い方 (Gemini用メモ)')}</div>
-    <div class="gm-row">
-      ${fi('appearance','外観ランク(1〜5)','number')}
-      ${fi('box','箱','text',['あり','なし',''])}
-      ${fi('manual','取説','text',['あり','なし',''])}
-    </div>
-    <div style="margin-bottom:9px">${fi('accessories','付属品')}</div>
-
-    ${s('購入情報')}
-    <div class="gm-row">${fi('purchaseDate','購入日')}${fi('purchaseSource','購入元')}</div>
-    <div class="gm-row">${fi('purchasePrice','購入価格(¥)','number')}${fi('marketPrice','購入時相場(¥)','number')}</div>
-
+    <div class="gm-row">${fi('name','モデル名')}${fi('genre','ジャンル')}</div>
+    <div style="margin-bottom:9px">${fi('desc','一言解説（特徴）')}</div>
+    <div class="gm-row">${fi('country','製造国')}${fi('year','製造年')}${fi('serial','シリアルNo.')}</div>
+    <div style="margin-bottom:9px">${fi('features','個体特徴 / パーツ情報')}</div>
+    <div class="gm-row">${fi('appearance','外観ランク(1-5)','number')}${fi('box','箱')}${fi('manual','取説')}</div>
+    <div class="gm-row">${fi('purchaseSource','購入元')}${fi('purchasePrice','購入価格(¥)','number')}${fi('marketPrice','相場価格(¥)','number')}${fi('utilityScore','有用性スコア(1-10)','number')}</div>
+    <div style="margin-bottom:9px">${fi('aiComment','メモ / AIコメント')}</div>
     <div class="gm-btns">
       <div>${!isNew?`<button class="g-btn-del" id="gm-del-btn">削除</button>`:''}</div>
       <div style="display:flex;gap:8px">
@@ -2188,16 +2176,7 @@ function buildGearModalBody(item, isNew) {
 
 function openGearAdd() {
   gEditIdx=-1; gEditIsNew=true;
-  const blank = {
-    status:'', maker:'', model:'', name:'', genre:'',
-    country:'', yearMonth:'', serial:'', serialPos:'',
-    screwType:'', labelColor:'', powerType:'',
-    logo:'', opamp:'', switchType:'',
-    features:'', desc:'', appearance:null,
-    condition:'動作品', box:'', manual:'', accessories:'',
-    purchaseDate:'', purchaseSource:'', purchasePrice:null, marketPrice:null,
-    tags:[], researchNotes:'', lastAnalyzed:null
-  };
+  const blank={status:'',maker:'',model:'',name:'',genre:'',desc:'',country:'',year:'',serial:'',features:'',appearance:null,condition:'動作品',box:'',manual:'',purchaseSource:'',purchasePrice:null,marketPrice:null,utilityScore:null,aiComment:'',tags:[],researchNotes:'',lastAnalyzed:null};
   document.getElementById('gm-title-text').textContent='機材を追加';
   document.getElementById('gm-body').innerHTML=buildGearModalBody(blank,true);
   document.getElementById('gear-modal').classList.add('open');
