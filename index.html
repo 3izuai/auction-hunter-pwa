@@ -1783,7 +1783,7 @@ async function registerSW() {
 
 // ============================================================
 // GEAR MANAGEMENT（音楽機材管理）
-// Gemini 1.5 Flash 無料API / Claudeトークン不使用
+// Gemini 2.5 Flash Lite 無料API / Claudeトークン不使用
 // ============================================================
 
 const GEAR_INIT = [
@@ -1998,7 +1998,7 @@ function buildGearAnalysis() {
   }).join('');
   return `<div class="g-ai-wrap">
     <div class="g-section-title">AI 有用性・シナジー分析</div>
-    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Gemini 1.5 Flash（無料）使用 · Claudeトークン不使用</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Gemini 2.5 Flash Lite（無料）使用 · Claudeトークン不使用</div>
     <div style="display:grid;grid-template-columns:255px 1fr;gap:14px">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -2106,14 +2106,14 @@ function buildAiOutput() {
   if (!gAiLoad && !gAiResult && !gAiErr) return '';
   if (gAiLoad) return `<div class="g-ai-box"><div class="g-ai-lbl">// GEMINI PROCESSING...</div><div class="g-dots">${[0,1,2,3,4].map(i=>`<div class="g-dot" style="animation:gdot 1.4s ${i*0.2}s infinite"></div>`).join('')}</div></div>`;
   if (gAiErr)  return `<div class="g-ai-box g-ai-err"><div class="g-ai-lbl">// ERROR</div>${gAiErr}</div>`;
-  return `<div class="g-ai-box"><div class="g-ai-lbl">// AI OUTPUT — Gemini 1.5 Flash (Free)</div>${gAiResult}</div>`;
+  return `<div class="g-ai-box"><div class="g-ai-lbl">// AI OUTPUT — Gemini 2.5 Flash Lite (Free)</div>${gAiResult}</div>`;
 }
 
 // ── Gemini API ──
 async function callGemini(prompt) {
   if (!geminiKey) throw new Error('Gemini APIキーが未設定です。\n⚙設定タブ → APIキーを入力してください。\n取得 (無料): https://aistudio.google.com/apikey');
   const res = await fetchWithTimeout(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${geminiKey}`,
     {method:'POST',headers:{'Content-Type':'application/json'},
      body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{maxOutputTokens:1000,temperature:0.7}})},
     30000
