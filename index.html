@@ -23,7 +23,7 @@
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--ink);min-height:100dvh}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--ink);min-height:100dvh;min-height:-webkit-fill-available;-webkit-overflow-scrolling:touch}
 
 .pfc-soon{opacity:.4;cursor:default;position:relative}
 .pfc-soon::after{content:'準備中';position:absolute;bottom:-14px;left:50%;
@@ -118,6 +118,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .err-badge{background:var(--red);color:#fff;font-size:9px;padding:1px 5px;
   border-radius:99px;margin-left:3px;vertical-align:middle;display:inline-block}
 
+/* ── SETTINGS MODAL INNER ── */
+#settings-modal .set-section{padding-bottom:16px}
+#settings-modal .modal{border-radius:16px;margin:20px 12px;width:calc(100% - 24px);max-width:560px}
+
 /* ── PLATFORM FILTER ── */
 .pf-bar{background:var(--paper2);border-bottom:1px solid var(--border);
   display:flex;gap:6px;padding:8px 14px;overflow-x:auto;scrollbar-width:none}
@@ -140,7 +144,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 /* ── SECTIONS ── */
 .sec{display:none}.sec.on{display:block}
 .list{padding:12px 14px;display:flex;flex-direction:column;gap:10px;
-  padding-bottom:calc(var(--safe-bottom)+70px)}
+  padding-bottom:calc(var(--safe-bottom)+70px);-webkit-overflow-scrolling:touch}
 
 /* ── CARDS ── */
 .card{background:var(--paper);border:1.5px solid var(--border);border-radius:12px;
@@ -483,6 +487,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <div class="hdr-status-text" id="hdr-status-text">確認中...</div>
   </div>
   <div class="hdr-actions">
+    <div class="hdr-btn" onclick="openSettingsModal()" title="設定">⚙</div>
     <div class="hdr-btn" onclick="refreshAll()" title="更新">↺</div>
   </div>
 </div>
@@ -499,7 +504,6 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <button class="tab on"  onclick="showTab('items',this)">レーダー</button>
   <button class="tab"     onclick="showTab('conditions',this)">条件設定</button>
   <button class="tab"     onclick="showTab('bought',this)">落札</button>
-  <button class="tab"     onclick="showTab('settings',this)">設定</button>
   <button class="tab" id="tab-errors" onclick="showTab('errors',this)">エラー</button>
   <button class="tab" onclick="showTab('gear',this)">🎸 機材</button>
 </div>
@@ -554,9 +558,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   </div>
 </div>
 
-<!-- ===== SETTINGS ===== -->
-<div id="sec-settings" class="sec">
-  <div class="set-section">
+<!-- ===== SETTINGS MODAL ===== -->
+<div class="modal-overlay" id="settings-modal" onclick="closeSettingsModal(event)">
+  <div class="modal" style="max-height:88dvh;overflow-y:auto;padding:0">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--paper2);z-index:1">
+      <div style="font-size:15px;font-weight:700;letter-spacing:.04em">⚙ 設定</div>
+      <button onclick="closeSettingsModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3);padding:0 4px;line-height:1">×</button>
+    </div>
+    <div class="set-section">
 
     <!-- ntfy.sh 通知設定 -->
     <div class="set-card">
@@ -688,6 +697,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <button class="save-btn" onclick="saveSettings()">設定を保存</button>
   </div>
 </div>
+  </div>
+</div>
 
 <!-- ===== ERRORS ===== -->
 <!-- ===== GEAR ===== -->
@@ -702,7 +713,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
       <div id="g-stat-chips" style="display:flex;gap:5px;flex:1;overflow:hidden;flex-wrap:nowrap"></div>
       <div style="display:flex;gap:5px;flex-shrink:0;margin-left:4px">
         <button class="g-btn-sm" onclick="openGearAdd()">＋</button>
-        <button class="g-btn-sm-ghost" onclick="showGearTab('settings',null)">⚙</button>
+        <button class="g-btn-sm-ghost" onclick="openSettingsModal()">⚙</button>
       </div>
     </div>
     <div class="g-ntabs" style="align-items:center">
@@ -837,6 +848,30 @@ let CFG            = loadCFG();
 let allItems       = [];
 let conditions     = [];
 let curPF          = 'all';
+
+const DEFAULT_CONDITIONS = [
+  { id:'dc01', platform:'yahoo', keyword:'jd01',                   category:'26318', maxPrice:0,      maxBuyNow:0, memo:'自動車・オートバイ / 新着順', active:true, createdAt:'2024-01-01T00:00:00.000Z' },
+  { id:'dc02', platform:'yahoo', keyword:'ct110',                  category:'21600', maxPrice:0,      maxBuyNow:0, memo:'本・雑誌 / 新着順', active:true, createdAt:'2024-01-01T00:00:01.000Z' },
+  { id:'dc03', platform:'yahoo', keyword:'ハンターカブ',           category:'0',     maxPrice:300000, maxBuyNow:0, memo:'全カテゴリ 30万円以下 / 新着順', active:true, createdAt:'2024-01-01T00:00:02.000Z' },
+  { id:'dc04', platform:'yahoo', keyword:'ct110',                  category:'26318', maxPrice:0,      maxBuyNow:0, memo:'自動車・オートバイ 中古 / 新着順', active:true, createdAt:'2024-01-01T00:00:03.000Z' },
+  { id:'dc05', platform:'yahoo', keyword:'MTQL70N',                category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:04.000Z' },
+  { id:'dc06', platform:'yahoo', keyword:'yamaha SA-RR',           category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:05.000Z' },
+  { id:'dc07', platform:'yahoo', keyword:'ジャンク BEHRINGER',     category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:06.000Z' },
+  { id:'dc08', platform:'yahoo', keyword:'',                       category:'23828', maxPrice:50000,  maxBuyNow:0, memo:'オーディオ機器その他 5万円以下 中古 / 新着順', active:true, createdAt:'2024-01-01T00:00:07.000Z' },
+  { id:'dc09', platform:'yahoo', keyword:'楽器 点',               category:'0',     maxPrice:50000,  maxBuyNow:0, memo:'全カテゴリ 5万円以下 傷汚れあり / 新着順', active:true, createdAt:'2024-01-01T00:00:08.000Z' },
+  { id:'dc10', platform:'yahoo', keyword:'loog',                   category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:09.000Z' },
+  { id:'dc11', platform:'yahoo', keyword:'楽器周辺',               category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:10.000Z' },
+  { id:'dc12', platform:'yahoo', keyword:'yamaha solo',            category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:11.000Z' },
+  { id:'dc13', platform:'yahoo', keyword:'yamaha ギター',          category:'0',     maxPrice:30000,  maxBuyNow:0, memo:'全カテゴリ 3万円以下 / 新着順', active:true, createdAt:'2024-01-01T00:00:12.000Z' },
+  { id:'dc14', platform:'yahoo', keyword:'gretsch parlor',         category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:13.000Z' },
+  { id:'dc15', platform:'yahoo', keyword:'behringer ct200',        category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:14.000Z' },
+  { id:'dc16', platform:'yahoo', keyword:'fujigen pp',             category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:15.000Z' },
+  { id:'dc17', platform:'yahoo', keyword:'squier stratocaster -Affinity -bullet -modified -vibe -sonic -mini -standard', category:'0', maxPrice:0, maxBuyNow:0, memo:'全カテゴリ 除外多数 / 新着順', active:true, createdAt:'2024-01-01T00:00:16.000Z' },
+  { id:'dc18', platform:'yahoo', keyword:'laney vc15',             category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:17.000Z' },
+  { id:'dc19', platform:'yahoo', keyword:'tamariya',               category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 残り時間長い順', active:true, createdAt:'2024-01-01T00:00:18.000Z' },
+  { id:'dc20', platform:'yahoo', keyword:'レコーディング',         category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:19.000Z' },
+];
+
 let editingCondIdx = null; // ★条件編集用
 let errorLog       = JSON.parse(localStorage.getItem('errorLog') || '[]');
 
@@ -868,7 +903,6 @@ function showTab(name, btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
   document.getElementById('sec-' + name).classList.add('on');
   if (btn) btn.classList.add('on');
-  if (name === 'settings')   renderBlockedSellers();
   if (name === 'errors')     renderErrors();
   if (name === 'conditions') renderConditions();
   if (name === 'gear')       { initGear(); renderGearContent(); }
@@ -905,6 +939,21 @@ async function loadItems() {
         <div class="empty-text">接続できません</div>
         <div class="empty-sub">Cloudflare WorkerのデプロイをCloudflare Dashboardで確認してください<br><br>
         <button class="stamp-btn outline" onclick="loadItems()" style="font-size:12px">🔄 再試行</button></div></div>`;
+  }
+}
+
+
+// ── SETTINGS MODAL ──
+function openSettingsModal() {
+  renderBlockedSellers();
+  loadSettingsUI();
+  document.getElementById('settings-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSettingsModal(e) {
+  if (!e || e.target === document.getElementById('settings-modal') || e.target.closest('button[onclick="closeSettingsModal()"]')) {
+    document.getElementById('settings-modal').classList.remove('open');
+    document.body.style.overflow = '';
   }
 }
 
@@ -1235,10 +1284,15 @@ async function loadConditions() {
     const res  = await fetchWithTimeout(`${WORKER_URL}/conditions`, {}, 15000);
     const data = await res.json();
     conditions = data.conditions || [];
+    if (!conditions.length) {
+      conditions = DEFAULT_CONDITIONS.map(c => ({...c}));
+      await saveConditions();
+    }
     renderConditions();
   } catch(e) {
     logErr('PWA',`条件読み込みエラー: ${e.message}`);
-    conditions = JSON.parse(localStorage.getItem('conditions')||'[]');
+    const saved = localStorage.getItem('conditions');
+    conditions = saved ? JSON.parse(saved) : DEFAULT_CONDITIONS.map(c => ({...c}));
     renderConditions();
   }
 }
@@ -1783,7 +1837,7 @@ async function registerSW() {
 
 // ============================================================
 // GEAR MANAGEMENT（音楽機材管理）
-// Gemini 2.5 Flash Lite 無料API / Claudeトークン不使用
+// Gemini 1.5 Flash 無料API / Claudeトークン不使用
 // ============================================================
 
 const GEAR_INIT = [
@@ -1998,7 +2052,7 @@ function buildGearAnalysis() {
   }).join('');
   return `<div class="g-ai-wrap">
     <div class="g-section-title">AI 有用性・シナジー分析</div>
-    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Gemini 2.5 Flash Lite（無料）使用 · Claudeトークン不使用</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px">Gemini 1.5 Flash（無料）使用 · Claudeトークン不使用</div>
     <div style="display:grid;grid-template-columns:255px 1fr;gap:14px">
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
@@ -2106,7 +2160,7 @@ function buildAiOutput() {
   if (!gAiLoad && !gAiResult && !gAiErr) return '';
   if (gAiLoad) return `<div class="g-ai-box"><div class="g-ai-lbl">// GEMINI PROCESSING...</div><div class="g-dots">${[0,1,2,3,4].map(i=>`<div class="g-dot" style="animation:gdot 1.4s ${i*0.2}s infinite"></div>`).join('')}</div></div>`;
   if (gAiErr)  return `<div class="g-ai-box g-ai-err"><div class="g-ai-lbl">// ERROR</div>${gAiErr}</div>`;
-  return `<div class="g-ai-box"><div class="g-ai-lbl">// AI OUTPUT — Gemini 2.5 Flash Lite (Free)</div>${gAiResult}</div>`;
+  return `<div class="g-ai-box"><div class="g-ai-lbl">// AI OUTPUT — Gemini 1.5 Flash (Free)</div>${gAiResult}</div>`;
 }
 
 // ── Gemini API ──
