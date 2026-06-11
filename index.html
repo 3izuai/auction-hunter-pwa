@@ -29,12 +29,8 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .pfc-soon::after{content:'準備中';position:absolute;bottom:-14px;left:50%;
   transform:translateX(-50%);font-size:8px;color:var(--ink3);white-space:nowrap}
 .safe-spacer{
-  height:env(safe-area-inset-top,47px);
-  min-height:47px;
+  height:env(safe-area-inset-top,0px);
   background:var(--ink);
-  position:sticky;
-  top:0;
-  z-index:201;
 }
 
 /* ── HEADER STATUS（GAS死活監視 インライン表示） ── */
@@ -157,6 +153,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .card{background:var(--paper);border:1.5px solid var(--border);border-radius:12px;
   overflow:hidden;box-shadow:2px 3px 0 rgba(28,26,23,.06);position:relative;
   animation:fadeUp .3s ease both}
+/* ── URGENCY HIGHLIGHT (24h=orange / 12h=red) ── */
+.card.ending-soon{background:#fff8f0;border-color:rgba(200,90,0,.40)}
+.card.ending-soon::before{background:linear-gradient(#f59e0b,#ea580c)!important}
+.card.ending-urgent{background:#fff1f1;border-color:rgba(185,28,28,.45)}
+.card.ending-urgent::before{background:linear-gradient(#ef4444,#b91c1c)!important}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:12px 0 0 12px}
 .card.yahoo::before{background:#C0392B}.card.mercari::before{background:#E94764}
@@ -645,6 +646,32 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     </div>
 
 
+    <!-- 機材データ管理 -->
+    <div class="set-card" id="gear-settings-card">
+      <div class="set-title">🎸 機材データ管理</div>
+      <div class="set-row">
+        <div>
+          <div class="set-key">GASとのデータ同期</div>
+          <div id="gear-sync-status" class="set-desc">— 機材タブを開くと読み込み状態が表示されます</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="stamp-btn outline" style="font-size:12px;padding:6px 10px" onclick="gearLoadFromModal()">📥 読込</button>
+          <button class="stamp-btn" style="font-size:12px;padding:6px 10px;background:var(--green);border-color:var(--green)" onclick="gearSaveFromModal()">📤 保存</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <div>
+          <div class="set-key">Gemini API Key（AI評価・ボード提案）</div>
+          <div id="gemini-key-status-main" class="set-desc">確認中...</div>
+        </div>
+        <button class="clear-btn" onclick="editGeminiKeyMain()">✏️ 編集</button>
+      </div>
+      <div id="gemini-edit-main" style="display:none;margin-top:8px">
+        <input class="fi" id="gemini-key-main-input" type="password" placeholder="AIzaSy...（aistudio.google.com/apikey で無料取得）" style="width:100%">
+        <button class="stamp-btn" style="margin-top:8px;width:100%;justify-content:center" onclick="saveGeminiKeyMain()">保存</button>
+      </div>
+    </div>
+
     <!-- 出品者ブロックリスト -->
     <div class="set-card">
       <div class="set-title">🚫 出品者ブロックリスト</div>
@@ -962,8 +989,46 @@ function openSettingsModal() {
   renderExcludeTags();
   applySettingsUI();
   loadConfigStatus();
+  // ── gear section state ──
+  const syncEl = document.getElementById('gear-sync-status');
+  if (syncEl) syncEl.textContent = gearList.length
+    ? `${gearList.length}台 (キャッシュ済み)`
+    : '未読み込み — 📥読込ボタンで取得';
+  const gemEl = document.getElementById('gemini-key-status-main');
+  if (gemEl) {
+    const k = localStorage.getItem('cheapy-gear-gemini') || '';
+    gemEl.textContent = k ? '✓ APIキー設定済み（AI機能有効）' : '未設定（AI機能は使えません）';
+  }
+  const ginp = document.getElementById('gemini-key-main-input');
+  if (ginp) ginp.value = localStorage.getItem('cheapy-gear-gemini') || '';
   document.getElementById('settings-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+// ── gear actions from main modal ──
+function gearLoadFromModal() {
+  if (!confirm('GASから機材データを読み込みますか？\nローカルキャッシュを上書きします。')) return;
+  localStorage.removeItem('cheapy-gear-v1');
+  gearList = []; gInited = false;
+  initGear();
+  showToast('📥 GASから機材データを読み込み中...');
+  closeSettingsModalForce();
+}
+function gearSaveFromModal() {
+  if (!gearList.length) { showToast('⚠ 保存する機材データがありません'); return; }
+  syncGearToGas();
+}
+function editGeminiKeyMain() {
+  const row = document.getElementById('gemini-edit-main');
+  if (row) row.style.display = row.style.display === 'none' ? 'block' : 'none';
+}
+function saveGeminiKeyMain() {
+  const k = (document.getElementById('gemini-key-main-input').value || '').trim();
+  geminiKey = k;
+  localStorage.setItem('cheapy-gear-gemini', k);
+  document.getElementById('gemini-edit-main').style.display = 'none';
+  const st = document.getElementById('gemini-key-status-main');
+  if (st) st.textContent = k ? '✓ APIキー設定済み（AI機能有効）' : '未設定';
+  showToast(k ? '✓ Gemini APIキーを保存しました' : 'APIキーをクリアしました');
 }
 function closeSettingsModal(e) {
   if (!e || e.target === document.getElementById('settings-modal')) {
@@ -1061,6 +1126,16 @@ function renderItems(items) {
   startRemainCountdown();
 }
 
+function getUrgencyClass(item) {
+  const ed = getEndDate(item);
+  if (!ed) return '';
+  const diff = ed - Date.now();
+  if (diff <= 0) return '';
+  if (diff <= 12 * 3600000) return 'ending-urgent';
+  if (diff <= 24 * 3600000) return 'ending-soon';
+  return '';
+}
+
 function renderCard(item, idx) {
   const sc    = item.score || 0;
   const pf    = item.platform || 'yahoo';
@@ -1085,7 +1160,8 @@ function renderCard(item, idx) {
     rakuma:`https://fril.jp/item/${item.id.replace('rakuma_','')}`, jimoty: item.url }[pf] || item.url || '#';
   const openLbl = { yahoo:'ヤフオクで開く', mercari:'メルカリで開く', rakuma:'ラクマで開く', jimoty:'ジモティで開く' }[pf];
 
-  return `<div class="card ${pf}" id="card-${item.id}" style="animation-delay:${idx*.04}s" onclick="trackView('${item.id}')">
+  const urgCls = getUrgencyClass(item);
+  return `<div class="card ${pf}${urgCls?' '+urgCls:''}" id="card-${item.id}" style="animation-delay:${idx*.04}s" onclick="trackView('${item.id}')">
     ${imgHtml}
     <div class="card-body">
       <div class="card-top">
@@ -1871,6 +1947,13 @@ function startRemainCountdown() {
       else { txt = `🔥${m}m${String(s).padStart(2,'0')}s`; cls='remain-urgent'; }
       el.textContent = txt;
       el.className = `remain-live ${cls}`;
+      // ── update parent card urgency class in real-time ──
+      const card = el.closest('.card');
+      if (card) {
+        card.classList.remove('ending-soon','ending-urgent');
+        if (diffMs > 0 && diffMs <= 12*3600000) card.classList.add('ending-urgent');
+        else if (diffMs > 0 && diffMs <= 24*3600000) card.classList.add('ending-soon');
+      }
     });
   }, 1000);
 }
@@ -2220,77 +2303,25 @@ function applyGearBoardEvents() {
 
 // ── SETTINGS ──
 function buildGearSettings() {
-  const gasUrl = localStorage.getItem('gasWebAppUrl') || '';
-  return `<div class="g-ai-wrap">
-    <div class="g-section-title">⚙ 設定</div>
-
-    <!-- Googleスプレッドシート連携 -->
-    <div style="background:#0b0b18;border:1px solid ${gasUrl?'#14532d':'#16162a'};border-radius:8px;padding:16px;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:6px">📊 Googleスプレッドシート連携</div>
-      <div style="font-size:11px;color:#64748b;line-height:1.8;margin-bottom:8px">
-        機材データ・検索条件をシートで管理します。<br>
-        アプリ上部「⚙設定」からGAS WebApp URLを先に入力してください。
-      </div>
-      <div style="font-size:10px;font-family:monospace;color:${gasUrl?'#4ade80':'#fbbf24'};margin-bottom:10px">
-        ${gasUrl ? '✓ GAS URL設定済み' : '⚠ GAS URL未設定 — アプリ設定タブから入力してください'}
-      </div>
+  return `<div class="g-ai-wrap" style="text-align:center;padding:40px 20px">
+    <div style="font-size:40px;margin-bottom:14px">⚙</div>
+    <div style="font-size:14px;font-weight:700;color:#dde4f5;margin-bottom:8px">設定はメインメニューへ統合されました</div>
+    <div style="font-size:12px;color:#64748b;line-height:1.8;margin-bottom:20px">
+      機材データの同期・Gemini APIキーの設定は<br>アプリ上部の「⚙」ボタンから行えます
+    </div>
+    <button class="g-btn-pri" onclick="openSettingsModal()">⚙ 設定を開く</button>
+    <div style="margin-top:28px;text-align:left">
+      <div style="font-size:9.5px;color:#3d4562;font-family:monospace;letter-spacing:.1em;margin-bottom:8px">QUICK ACTIONS</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button id="g-load-gas-btn" class="g-btn-sm" style="${!gasUrl?'opacity:.5;cursor:not-allowed':''}" title="GASスプレッドシートから機材データを読み込む">📥 GASから読み込み</button>
-        <button id="g-save-gas-btn" class="g-btn-sm" style="background:#4ade80;color:#020209;${!gasUrl?'opacity:.5;cursor:not-allowed':''}" title="ローカルデータをGASスプレッドシートに書き出す">📤 GASに保存</button>
+        <button class="g-btn-sm" onclick="syncGearToGas()">📤 今すぐGASに保存</button>
+        <button class="g-btn-sm-ghost" onclick="if(confirm('GASから再読込しますか？')){localStorage.removeItem('cheapy-gear-v1');gearList=[];gInited=false;initGear();}">📥 GASから再読込</button>
       </div>
-    </div>
-
-    <!-- Gemini API Key -->
-    <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">Gemini API Key（AI機能用・無料）</div>
-      <div style="font-size:11px;color:#64748b;line-height:1.8;margin-bottom:10px">
-        AI機能（有用性評価・ボード提案）に使用します。<br>
-        <span style="color:#4ade80;font-weight:700">完全無料</span> — 15回/分 / 100万トークン/日 / Claudeトークン不使用<br>
-        取得先: <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#f59e0b">aistudio.google.com/apikey</a>
-      </div>
-      <input class="g-inp" id="g-gemini-key" type="password" value="${geminiKey}" placeholder="AIzaSy..." style="width:100%;margin-bottom:8px">
-      <div style="font-size:10px;font-family:monospace;color:${geminiKey?'#4ade80':'#64748b'}">${geminiKey?'✓ APIキー設定済み — AI機能が使えます':'⚠ 未設定 — AI機能は使えません'}</div>
-      <button id="g-save-key-btn" class="g-btn-sm" style="margin-top:10px">APIキーを保存</button>
-    </div>
-
-    <!-- データ管理 -->
-    <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px">
-      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">データ管理</div>
-      <div style="font-size:11px;color:#64748b;margin-bottom:10px">localStorageキャッシュをクリアしてGASから再読み込みします。</div>
-      <button id="g-reset-btn" class="g-btn-del" style="font-size:12px">↺ キャッシュクリア &amp; GASから再読込</button>
     </div>
   </div>`;
 }
 
 function applyGearSettingsEvents() {
-  document.getElementById('g-save-key-btn')?.addEventListener('click', ()=>{
-    geminiKey = (document.getElementById('g-gemini-key').value||'').trim();
-    localStorage.setItem('cheapy-gear-gemini', geminiKey);
-    showToast(geminiKey?'✓ Gemini APIキーを保存しました':'⚠ APIキーをクリアしました');
-    renderGearContent();
-  });
-  // GASから読み込みボタン
-  document.getElementById('g-load-gas-btn')?.addEventListener('click', async ()=>{
-    const gasUrl = localStorage.getItem('gasWebAppUrl');
-    if (!gasUrl) { showToast('⚠ GAS URLを設定タブで入力してください'); return; }
-    if (!confirm('GASから機材データを読み込みますか？\nローカルキャッシュを上書きします。')) return;
-    localStorage.removeItem('cheapy-gear-v1');
-    gearList = []; gInited = false;
-    initGear();
-  });
-  // GASに保存ボタン
-  document.getElementById('g-save-gas-btn')?.addEventListener('click', ()=>{
-    if (!gearList.length) { showToast('⚠ 保存する機材データがありません'); return; }
-    syncGearToGas();
-  });
-  // キャッシュクリア & 再読込ボタン
-  document.getElementById('g-reset-btn')?.addEventListener('click', ()=>{
-    if (!confirm('localStorageをクリアしてGASから再読み込みしますか？\n未同期の編集内容は失われます。')) return;
-    localStorage.removeItem('cheapy-gear-v1');
-    gearList = []; gSel = []; gInited = false;
-    initGear();
-    showToast('↺ キャッシュをクリアしました — GASから読み込み中...');
-  });
+  // gear settings moved to main settings modal (openSettingsModal)
 }
 
 // ── AI Output ──
