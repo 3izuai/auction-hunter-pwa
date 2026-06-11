@@ -143,8 +143,15 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 
 /* ── SECTIONS ── */
 .sec{display:none}.sec.on{display:block}
-.list{padding:12px 14px;display:flex;flex-direction:column;gap:10px;
-  padding-bottom:calc(var(--safe-bottom)+70px);-webkit-overflow-scrolling:touch}
+.list{
+  padding:8px 8px calc(var(--safe-bottom)+70px);
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  align-items:start;
+  -webkit-overflow-scrolling:touch}
+@media(min-width:600px){.list{grid-template-columns:repeat(3,1fr);padding:10px 12px calc(var(--safe-bottom)+70px);gap:10px}}
+@media(min-width:960px){.list{grid-template-columns:repeat(4,1fr);padding:12px 16px calc(var(--safe-bottom)+70px);gap:12px}}
 
 /* ── CARDS ── */
 .card{background:var(--paper);border:1.5px solid var(--border);border-radius:12px;
@@ -154,12 +161,12 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .card::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;border-radius:12px 0 0 12px}
 .card.yahoo::before{background:#C0392B}.card.mercari::before{background:#E94764}
 .card.rakuma::before{background:#8B1A7A}.card.jimoty::before{background:#1A4A7A}
-.card-img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--paper2);display:block}
-.card-ph{width:100%;aspect-ratio:16/9;background:var(--paper2);
-  display:flex;align-items:center;justify-content:center;font-size:40px}
-.card-body{padding:12px 12px 12px 15px}
-.card-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
-.score-svg{width:50px;height:50px;flex-shrink:0}
+.card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--paper2);display:block}
+.card-ph{width:100%;aspect-ratio:4/3;background:var(--paper2);
+  display:flex;align-items:center;justify-content:center;font-size:32px}
+.card-body{padding:7px 7px 7px 9px}
+.card-top{display:flex;gap:6px;align-items:flex-start;margin-bottom:5px}
+.score-svg{width:34px;height:34px;flex-shrink:0}
 .card-info{flex:1;min-width:0}
 .pf-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
   font-family:'DM Mono',monospace;letter-spacing:.06em;padding:2px 7px;border-radius:4px;margin-bottom:5px}
@@ -173,17 +180,17 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .fb-maybe{background:var(--amber-bg);color:var(--amber)}
 .fb-bad  {background:var(--paper3);color:var(--ink3)}
 .fb-bought{background:var(--green-bg);color:var(--green)}
-.card-title{font-size:14px;font-weight:700;line-height:1.4;margin-bottom:5px;
+.card-title{font-size:12px;font-weight:700;line-height:1.35;margin-bottom:4px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.card-price{font-size:13px;color:var(--ink3)}
-.card-price b{color:var(--ink);font-size:17px;font-family:'Playfair Display',serif;font-weight:700}
+.card-price{font-size:11px;color:var(--ink3)}
+.card-price b{color:var(--ink);font-size:14px;font-family:'Playfair Display',serif;font-weight:700}
 .buynow{color:var(--green);font-size:12px;font-weight:700}
 .tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:9px}
 .tag{font-size:11px;padding:2px 7px;border-radius:4px;font-family:'DM Mono',monospace}
 .tg{background:var(--green-bg);color:var(--green)}
 .ta{background:var(--amber-bg);color:var(--amber)}
 .tr{background:var(--red-bg);color:var(--red)}
-.card-meta{font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.7;
+.card-meta{font-size:10px;color:var(--ink3);margin-bottom:6px;line-height:1.5;
   font-family:'DM Mono',monospace}
 .ae{color:var(--green);font-weight:700}
 
@@ -465,6 +472,30 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
 .gm-row{display:flex;gap:8px;margin-bottom:9px;flex-wrap:wrap}
 .gm-row>*{flex:1;min-width:110px}
 .gm-btns{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
+
+/* ── PC CARD OVERRIDES ── */
+@media(min-width:960px){
+  .card-img,.card-ph{aspect-ratio:16/9}
+  .card-body{padding:10px 11px 10px 13px}
+  .card-top{gap:9px;margin-bottom:7px}
+  .score-svg{width:44px;height:44px}
+  .card-title{font-size:13px;margin-bottom:5px}
+  .card-price b{font-size:16px}
+  .card-meta{font-size:11px;margin-bottom:8px}
+}
+@media(min-width:600px) and (max-width:959px){
+  .card-img,.card-ph{aspect-ratio:4/3}
+  .score-svg{width:38px;height:38px}
+  .card-title{font-size:12px}
+}
+
+/* ── COMPACT CARD ELEMENTS ── */
+.bbar{margin-bottom:7px;padding:7px 8px;background:var(--paper2);border-radius:6px;border:1px solid var(--border)}
+.bbar-top{margin-bottom:4px}
+.bbar-label{font-size:9px}
+.bbar-score{font-size:11px}
+.bbar-sigs{gap:3px;margin-top:5px}
+.sig{font-size:9px;padding:1px 5px}
 </style>
 </head>
 <body>
@@ -536,6 +567,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
     <div class="cond-toolbar">
       <div class="cond-count" id="cond-count">0 / 100 件</div>
       <button class="stamp-btn outline" onclick="showSuggest()">🦦 候補を提案</button>
+      <button class="stamp-btn outline" onclick="resetToDefaultConditions()" style="font-size:11px">↺ GASから再読込</button>
       <button class="stamp-btn" onclick="openModal()">＋ 追加</button>
     </div>
     <div id="suggest-area" style="display:none"></div>
@@ -563,7 +595,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--paper);color:var(--i
   <div class="modal" style="max-height:88dvh;overflow-y:auto;padding:0">
     <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--paper2);z-index:1">
       <div style="font-size:15px;font-weight:700;letter-spacing:.04em">⚙ 設定</div>
-      <button onclick="closeSettingsModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3);padding:0 4px;line-height:1">×</button>
+      <button onclick="closeSettingsModalForce()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink3);padding:0 4px;line-height:1">×</button>
     </div>
     <div class="set-section">
 
@@ -849,28 +881,9 @@ let allItems       = [];
 let conditions     = [];
 let curPF          = 'all';
 
-const DEFAULT_CONDITIONS = [
-  { id:'dc01', platform:'yahoo', keyword:'jd01',                   category:'26318', maxPrice:0,      maxBuyNow:0, memo:'自動車・オートバイ / 新着順', active:true, createdAt:'2024-01-01T00:00:00.000Z' },
-  { id:'dc02', platform:'yahoo', keyword:'ct110',                  category:'21600', maxPrice:0,      maxBuyNow:0, memo:'本・雑誌 / 新着順', active:true, createdAt:'2024-01-01T00:00:01.000Z' },
-  { id:'dc03', platform:'yahoo', keyword:'ハンターカブ',           category:'0',     maxPrice:300000, maxBuyNow:0, memo:'全カテゴリ 30万円以下 / 新着順', active:true, createdAt:'2024-01-01T00:00:02.000Z' },
-  { id:'dc04', platform:'yahoo', keyword:'ct110',                  category:'26318', maxPrice:0,      maxBuyNow:0, memo:'自動車・オートバイ 中古 / 新着順', active:true, createdAt:'2024-01-01T00:00:03.000Z' },
-  { id:'dc05', platform:'yahoo', keyword:'MTQL70N',                category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:04.000Z' },
-  { id:'dc06', platform:'yahoo', keyword:'yamaha SA-RR',           category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:05.000Z' },
-  { id:'dc07', platform:'yahoo', keyword:'ジャンク BEHRINGER',     category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:06.000Z' },
-  { id:'dc08', platform:'yahoo', keyword:'',                       category:'23828', maxPrice:50000,  maxBuyNow:0, memo:'オーディオ機器その他 5万円以下 中古 / 新着順', active:true, createdAt:'2024-01-01T00:00:07.000Z' },
-  { id:'dc09', platform:'yahoo', keyword:'楽器 点',               category:'0',     maxPrice:50000,  maxBuyNow:0, memo:'全カテゴリ 5万円以下 傷汚れあり / 新着順', active:true, createdAt:'2024-01-01T00:00:08.000Z' },
-  { id:'dc10', platform:'yahoo', keyword:'loog',                   category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:09.000Z' },
-  { id:'dc11', platform:'yahoo', keyword:'楽器周辺',               category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:10.000Z' },
-  { id:'dc12', platform:'yahoo', keyword:'yamaha solo',            category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:11.000Z' },
-  { id:'dc13', platform:'yahoo', keyword:'yamaha ギター',          category:'0',     maxPrice:30000,  maxBuyNow:0, memo:'全カテゴリ 3万円以下 / 新着順', active:true, createdAt:'2024-01-01T00:00:12.000Z' },
-  { id:'dc14', platform:'yahoo', keyword:'gretsch parlor',         category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:13.000Z' },
-  { id:'dc15', platform:'yahoo', keyword:'behringer ct200',        category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 新着順', active:true, createdAt:'2024-01-01T00:00:14.000Z' },
-  { id:'dc16', platform:'yahoo', keyword:'fujigen pp',             category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:15.000Z' },
-  { id:'dc17', platform:'yahoo', keyword:'squier stratocaster -Affinity -bullet -modified -vibe -sonic -mini -standard', category:'0', maxPrice:0, maxBuyNow:0, memo:'全カテゴリ 除外多数 / 新着順', active:true, createdAt:'2024-01-01T00:00:16.000Z' },
-  { id:'dc18', platform:'yahoo', keyword:'laney vc15',             category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:17.000Z' },
-  { id:'dc19', platform:'yahoo', keyword:'tamariya',               category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 残り時間長い順', active:true, createdAt:'2024-01-01T00:00:18.000Z' },
-  { id:'dc20', platform:'yahoo', keyword:'レコーディング',         category:'0',     maxPrice:0,      maxBuyNow:0, memo:'全カテゴリ / 評価順', active:true, createdAt:'2024-01-01T00:00:19.000Z' },
-];
+// ★ 検索条件はGoogleスプレッドシートで管理
+// GAS WebApp: action=getConditions / saveConditions
+// 初回セットアップ: setupSheets()でデフォルト20件を自動作成
 
 let editingCondIdx = null; // ★条件編集用
 let errorLog       = JSON.parse(localStorage.getItem('errorLog') || '[]');
@@ -946,15 +959,21 @@ async function loadItems() {
 // ── SETTINGS MODAL ──
 function openSettingsModal() {
   renderBlockedSellers();
-  loadSettingsUI();
+  renderExcludeTags();
+  applySettingsUI();
+  loadConfigStatus();
   document.getElementById('settings-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeSettingsModal(e) {
-  if (!e || e.target === document.getElementById('settings-modal') || e.target.closest('button[onclick="closeSettingsModal()"]')) {
+  if (!e || e.target === document.getElementById('settings-modal')) {
     document.getElementById('settings-modal').classList.remove('open');
     document.body.style.overflow = '';
   }
+}
+function closeSettingsModalForce() {
+  document.getElementById('settings-modal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 async function refreshAll() {
@@ -1280,21 +1299,51 @@ async function checkHeartbeat() {
 // CONDITIONS
 // ============================================================
 async function loadConditions() {
+  const localSaved = localStorage.getItem('conditions');
+  const localConds = localSaved ? JSON.parse(localSaved) : null;
+
   try {
     const res  = await fetchWithTimeout(`${WORKER_URL}/conditions`, {}, 15000);
     const data = await res.json();
-    conditions = data.conditions || [];
-    if (!conditions.length) {
-      conditions = DEFAULT_CONDITIONS.map(c => ({...c}));
-      await saveConditions();
+    const workerConds = (data.conditions && data.conditions.length) ? data.conditions : null;
+
+    if (workerConds) {
+      conditions = workerConds;
+    } else if (localConds) {
+      conditions = localConds;
+    } else {
+      // Worker も localStorage も空 → GAS から取得
+      const gasConds = await loadConditionsFromGas();
+      conditions = gasConds || [];
+      if (conditions.length) await saveConditions();
     }
-    renderConditions();
   } catch(e) {
-    logErr('PWA',`条件読み込みエラー: ${e.message}`);
-    const saved = localStorage.getItem('conditions');
-    conditions = saved ? JSON.parse(saved) : DEFAULT_CONDITIONS.map(c => ({...c}));
-    renderConditions();
+    logErr('PWA', `条件読み込みエラー(Worker): ${e.message}`);
+    if (localConds) {
+      conditions = localConds;
+    } else {
+      const gasConds = await loadConditionsFromGas();
+      conditions = gasConds || [];
+    }
   }
+  renderConditions();
+}
+
+// GAS から検索条件を取得（フォールバック）
+async function loadConditionsFromGas() {
+  const gasUrl = localStorage.getItem('gasWebAppUrl');
+  if (!gasUrl) return null;
+  try {
+    const res  = await fetchWithTimeout(`${gasUrl}?action=getConditions`, {}, 15000);
+    const data = await res.json();
+    if (data.conditions && data.conditions.length) {
+      localStorage.setItem('conditions', JSON.stringify(data.conditions));
+      return data.conditions;
+    }
+  } catch(e) {
+    logErr('PWA', `GASから条件読み込みエラー: ${e.message}`);
+  }
+  return null;
 }
 
 function renderConditions() {
@@ -1382,6 +1431,19 @@ async function submitCondition() {
 // 互換性のため残す
 async function addCondition() { await submitCondition(); }
 
+
+async function resetToDefaultConditions() {
+  if (!confirm('GASスプレッドシートから検索条件を再読み込みしますか？\nローカルキャッシュを上書きします。')) return;
+  const gasConds = await loadConditionsFromGas();
+  if (gasConds && gasConds.length) {
+    conditions = gasConds;
+    await saveConditions();
+    renderConditions();
+    showToast(`✓ GASから${conditions.length}件の条件を読み込みました`);
+  } else {
+    showToast('⚠ GASに条件データがありません。スプレッドシートを確認してください');
+  }
+}
 async function toggleCond(i) { conditions[i].active=!conditions[i].active; await saveConditions(); renderConditions(); }
 async function deleteCond(i) {
   if (!confirm(`「${conditions[i].keyword||'この条件'}」を削除しますか？`)) return;
@@ -1390,9 +1452,18 @@ async function deleteCond(i) {
 
 async function saveConditions() {
   localStorage.setItem('conditions',JSON.stringify(conditions));
+  // Worker KV に保存
   try {
     await fetchWithTimeout(`${WORKER_URL}/conditions`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({conditions})}, 12000);
-  } catch(e) { logErr('PWA',`条件保存エラー: ${e.message}`); }
+  } catch(e) { logErr('PWA',`条件保存エラー(Worker): ${e.message}`); }
+  // GAS スプレッドシートにもバックグラウンド同期
+  const gasUrl = localStorage.getItem('gasWebAppUrl');
+  if (gasUrl) {
+    fetchWithTimeout(gasUrl, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'saveConditions', conditions })
+    }, 15000).catch(e => logErr('PWA', `条件GAS同期エラー: ${e.message}`));
+  }
 }
 
 // ============================================================
@@ -1462,8 +1533,13 @@ function addSugKw(keyword, platform) {
 // ============================================================
 // 除外キーワード
 // ============================================================
+const DEFAULT_EXCLUDE_KWS = ['新品', '入門セット', '初心者セット'];
 function loadExcludeKws() {
-  return JSON.parse(localStorage.getItem('excludeKeywords') || '[]');
+  const saved = localStorage.getItem('excludeKeywords');
+  if (saved !== null) return JSON.parse(saved);
+  // 初回だけデフォルトを保存（以後は自由に編集可能）
+  saveExcludeKws([...DEFAULT_EXCLUDE_KWS]);
+  return [...DEFAULT_EXCLUDE_KWS];
 }
 function saveExcludeKws(kws) {
   localStorage.setItem('excludeKeywords', JSON.stringify(kws));
@@ -1840,39 +1916,9 @@ async function registerSW() {
 // Gemini 1.5 Flash 無料API / Claudeトークン不使用
 // ============================================================
 
-const GEAR_INIT = [
-  {id:"pv9",  status:"ボードに入れてる",maker:"Providence",     model:"PV-9",    name:"Provolt9",            genre:"パワーサプライ",      desc:"安定電源/ノイズ対策",       country:"",      year:"",           serial:"KN771838",     features:""},
-  {id:"od3",  status:"ボードに入れてる",maker:"BOSS",           model:"OD-3",    name:"OverDrive",           genre:"オーバードライブ",    desc:"自然な歪みの定番OD",        country:"Taiwan",year:"2007年10月", serial:"HW88507",      features:"黒ネジ/PSA"},
-  {id:"md2",  status:"ボードに入れてる",maker:"BOSS",           model:"MD-2",    name:"Mega Distortion",     genre:"ディストーション",    desc:"ヘヴィ系ディストーション",  country:"Taiwan",year:"2004年12月", serial:"LZ75858",      features:"黒ネジ/PSA"},
-  {id:"rowin",status:"ボードに入れてる",maker:"Rowin",          model:"",        name:"NOISE GATE",          genre:"ノイズゲート",        desc:"ノイズカット専用ペダル",     country:"",      year:"",           serial:"",             features:""},
-  {id:"at07", status:"ボードに入れてる",maker:"Tom's Line",     model:"AT-07",   name:"TUNER",               genre:"チューナー",          desc:"クロマチックチューナー",     country:"",      year:"",           serial:"",             features:""},
-  {id:"ge7a", status:"",               maker:"BOSS",           model:"GE-7",    name:"Equalizer '84",       genre:"イコライザー",        desc:"初期型JRC4558DD搭載",       country:"Japan", year:"1984年6月",  serial:"431100",       features:"JRC4558DDツヤあり/黒ラベル/ACA",  appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:7282},
-  {id:"ge7b", status:"",               maker:"BOSS",           model:"GE-7",    name:"Equalizer '85",       genre:"イコライザー",        desc:"前期型JRC4558DD搭載",       country:"Japan", year:"1985年5月",  serial:"549100",       features:"JRC4558DDツヤあり/黒ラベル/ACA",  appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"藤枝ハードオフ",purchasePrice:2200,marketPrice:7282},
-  {id:"mt2",  status:"",               maker:"BOSS",           model:"MT-2",    name:"Metal Zone",          genre:"ディストーション",    desc:"最初期型薄オレンジ文字",    country:"Taiwan",year:"1991年5月",  serial:"AC61217",      features:"銀ラベル/PSA/薄オレンジ文字",     appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:7500},
-  {id:"ce3",  status:"",               maker:"BOSS",           model:"CE-3",    name:"Chorus",              genre:"コーラス",            desc:"後期型ビンテージコーラス",  country:"Taiwan",year:"1989年?",    serial:"B989756",      features:"後期型ノブ/ACA/裏面ラベル欠品",   appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:6305},
-  {id:"ch1",  status:"",               maker:"BOSS",           model:"CH-1",    name:"SUPER Chorus",        genre:"コーラス",            desc:"スルーホール基板コーラス",  country:"Taiwan",year:"1989〜2001年?",serial:"(欠品)",       features:"スルーホール基板/PSA/ピンクラベル",appearance:4,condition:"動作品",   box:"箱有",manual:"取説有",purchaseSource:"ヤフーフリマ"},
-  {id:"cs2",  status:"",               maker:"BOSS",           model:"CS-2",    name:"Compression Sustainer",genre:"コンプレッサー",     desc:"国産初期型コンプ",          country:"Japan", year:"1985年11月", serial:"604300",       features:"黒ラベル/ACA",                    appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:9150},
-  {id:"cs3",  status:"",               maker:"BOSS",           model:"CS-3",    name:"Compression Sustainer",genre:"コンプレッサー",     desc:"後期型・電池劣化あり",       country:"Taiwan",year:"",           serial:"HF37362",      features:"電池ボックス内電池劣化/黒ラベル/ACA",appearance:1,condition:"動作品",box:"箱有",manual:"取説有"},
-  {id:"ns2",  status:"",               maker:"BOSS",           model:"NS-2",    name:"Noise Suppressor",    genre:"ノイズサプレッサー",  desc:"ビンテージノイズ除去",       country:"Japan", year:"1988年6月",  serial:"917469",       features:"銀ラベル/PSA",                    appearance:2,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフオク",       marketPrice:6000},
-  {id:"tw1",  status:"",               maker:"BOSS",           model:"TW-1",    name:"T Wah",               genre:"オートワウ",          desc:"初期型オートワウ希少",       country:"Japan", year:"1981〜1984年?",serial:"(判読不可)",   features:"黒ラベル/ACA/電池内劣化",         appearance:1,condition:"動作品",   box:"箱無",manual:"取説無"},
-  {id:"ml2",  status:"",               maker:"BOSS",           model:"ML-2",    name:"Metal Core",          genre:"ディストーション",    desc:"ダイオードクリップ高歪み",  country:"Taiwan",year:"2008年12月?",serial:"ZV43808",      features:"黒ラベル/PSA",                    appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"ヤフーフリマ"},
-  {id:"os2",  status:"",               maker:"BOSS",           model:"OS-2",    name:"Over Drive/Distortion",genre:"OD/ディストーション",desc:"OD/Dis切替可・LED不良",  country:"Taiwan",year:"2002年2月?", serial:"OO53315",      features:"銀ラベル/PSA/LED不点灯",          appearance:1,condition:"音出るジャンク"},
-  {id:"ls2",  status:"",               maker:"BOSS",           model:"LS-2",    name:"Line Selector",       genre:"ラインセレクター",   desc:"ABセレクター/ループ切替",   country:"Taiwan",year:"2000年代",   serial:"FW22329",      features:"銀ラベル/PSA",                    appearance:3,condition:"動作品"},
-  {id:"fs5jp",status:"",               maker:"BOSS",           model:"FS-5U",   name:"Footswitch (Japan)",  genre:"フットスイッチ",      desc:"日本製ビンテージ",          country:"Japan", year:"1996年4月?", serial:"GD-99397",     features:"",                                condition:"動作品"},
-  {id:"fs5cn",status:"",               maker:"BOSS",           model:"FS-5U",   name:"Footswitch (China)",  genre:"フットスイッチ",      desc:"中国製フットスイッチ",       country:"China", year:"",           serial:"(無し)",        features:"",                                condition:"動作品"},
-  {id:"ts9",  status:"",               maker:"Ibanez",         model:"TS-9",    name:"Tube Screamer",       genre:"オーバードライブ",    desc:"ミドル強調ビンテージOD",    country:"Japan", year:"1990年代",   serial:"",             features:"TA75558P/ラベル欠品/2ndリイシュー",appearance:2,condition:"動作品",box:"箱無",manual:"取説無",purchaseSource:"ヤフオク"},
-  {id:"jd01", status:"",               maker:"MAXON",          model:"JD-01",   name:"JET DRIVER",          genre:"オーバードライブ",    desc:"希少初期型ジャンク品",       country:"",      year:"1985〜1986年?",serial:"",            features:"LED欠品/ノブ表示欠品/ラベル欠品", appearance:1,condition:"音出るジャンク",box:"箱無",manual:"取説無"},
-  {id:"lbm",  status:"",               maker:"electro-harmonix",model:"",       name:"LITTLE BIG MUFF",     genre:"ファズ",              desc:"米国製初期型ファズ",         country:"USA",   year:"",           serial:"",             features:"初期型/SUSTAIN-TONE-VOLノブ配置", appearance:3,condition:"動作品",   box:"箱無",manual:"取説無",purchaseSource:"清水ピックアップ",purchasePrice:3300,marketPrice:7000},
-  {id:"mdi",  status:"",               maker:"MXR",            model:"",        name:"bass d.i.+",          genre:"ベースDI/プリアンプ", desc:"ベース用DI・プリアンプ",    country:"",      year:"",           serial:"",             features:"電池フタ欠品",                     appearance:2,condition:"動作品"},
-  {id:"mdc",  status:"",               maker:"MXR",            model:"",        name:"dyna comp",           genre:"コンプレッサー",      desc:"MXRビンテージコンプ",        country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
-  {id:"sky",  status:"",               maker:"tc electronic",  model:"",        name:"SKYSURFER REVERB",    genre:"リバーブ",            desc:"デジタルリバーブ",           country:"China", year:"",           serial:"S180301676CAY",features:"トップマウントジャック",           condition:"動作品"},
-  {id:"rbox", status:"",               maker:"Hughes&Kettner", model:"HUK-RB5", name:"RED BOX5",            genre:"キャビシミュ",        desc:"スピーカーキャビシミュ",    country:"",      year:"",           serial:"",             features:"ファンタム電源対応",               appearance:3,condition:"動作品",   box:"箱有",manual:"取説無"},
-  {id:"pb100",status:"",               maker:"BEHRINGER",      model:"PB100",   name:"PREAMP BOOSTER",      genre:"プリアンプ/ブースター",desc:"プリアンプ/ブースター",   country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
-  {id:"bo100",status:"",               maker:"BEHRINGER",      model:"BO100",   name:"BLUES OVERDRIVE",     genre:"オーバードライブ",    desc:"TSコピー系OD",               country:"",      year:"",           serial:"",             features:"",                                condition:"動作品"},
-  {id:"ms60b",status:"",               maker:"ZOOM",           model:"MS-60B",  name:"MULTI STOMP Bass",    genre:"マルチエフェクター",  desc:"ベース用マルチペダル",       country:"",      year:"",           serial:"34463",        features:"",                                appearance:3,condition:"動作品",   box:"箱無",manual:"取説無"},
-  {id:"ms50g",status:"",               maker:"ZOOM",           model:"MS-50G",  name:"MULTI STOMP Guitar",  genre:"マルチエフェクター",  desc:"ギター用マルチペダル",       country:"",      year:"",           serial:"",             features:"ジモティES335と共に購入",         appearance:3,condition:"動作品"},
-  {id:"fs01", status:"",               maker:"ZOOM",           model:"FS-01",   name:"Footswitch",          genre:"フットスイッチ",      desc:"ZOOM用フットスイッチ",       country:"China", year:"",           serial:"15051",        features:"",                                condition:"動作品"},
-].map(g=>({appearance:null,condition:"動作品",box:"",manual:"",purchaseSource:"",purchasePrice:null,marketPrice:null,...g,utilityScore:null,aiComment:"",tags:[],researchNotes:"",lastAnalyzed:null}));
+// ★ 機材データはGoogleスプレッドシートで管理
+// GAS WebApp: action=getGear / saveGear
+// localStorage: 'cheapy-gear-v1'（オフラインキャッシュ）
 
 // ── State ──
 let gearList   = [];
@@ -1892,17 +1938,71 @@ function initGear() {
   if (gInited) return;
   const saved = localStorage.getItem('cheapy-gear-v1');
   if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      const savedIds = new Set(parsed.map(g => g.id));
-      gearList = [...parsed,...GEAR_INIT.filter(g=>!savedIds.has(g.id))];
-    } catch(_) { gearList = [...GEAR_INIT]; }
-  } else { gearList = [...GEAR_INIT]; }
+    try { gearList = JSON.parse(saved); } catch(_) { gearList = []; }
+  } else { gearList = []; }
   geminiKey = localStorage.getItem('cheapy-gear-gemini') || '';
   gInited = true;
+  // localStorage が空の場合は GAS から自動読み込み
+  if (!saved) loadGearFromGas();
 }
 
-function saveGear() { localStorage.setItem('cheapy-gear-v1', JSON.stringify(gearList)); }
+// GAS から機材データを読み込む
+async function loadGearFromGas() {
+  const gasUrl = localStorage.getItem('gasWebAppUrl');
+  if (!gasUrl) { renderGearContent(); return; }
+  const c = document.getElementById('g-content');
+  if (c && !gearList.length) {
+    c.innerHTML = `<div style="padding:40px;text-align:center;color:#64748b"><div style="font-size:32px;margin-bottom:12px">📊</div><div style="font-size:13px">GASから機材データを読み込み中...</div></div>`;
+  }
+  try {
+    const res  = await fetchWithTimeout(`${gasUrl}?action=getGear`, {}, 20000);
+    const data = await res.json();
+    if (data.gear && data.gear.length) {
+      gearList = data.gear.map(g => ({
+        utilityScore:null, aiComment:'', tags:[], researchNotes:'', lastAnalyzed:null, ...g
+      }));
+      saveGear();
+      renderGearContent();
+      showToast(`✓ ${gearList.length}台の機材データを読み込みました`);
+    } else {
+      renderGearContent();
+      showToast('GASの機材リストシートにデータがありません');
+    }
+  } catch(e) {
+    logErr('GEAR', `GASから機材読み込みエラー: ${e.message}`);
+    renderGearContent();
+  }
+}
+
+// GAS へ機材データを手動同期
+async function syncGearToGas() {
+  const gasUrl = localStorage.getItem('gasWebAppUrl');
+  if (!gasUrl) { showToast('⚠ GAS WebApp URLが未設定です'); return; }
+  try {
+    const res  = await fetchWithTimeout(gasUrl, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'saveGear', gear:gearList })
+    }, 20000);
+    const data = await res.json();
+    if (data.ok) showToast(`✓ GASに${data.saved}台を保存しました`);
+    else throw new Error(data.error || '不明なエラー');
+  } catch(e) {
+    logErr('GEAR', `GASへの機材同期エラー: ${e.message}`);
+    showToast(`⚠ GAS同期エラー: ${e.message.slice(0,40)}`);
+  }
+}
+
+function saveGear() {
+  localStorage.setItem('cheapy-gear-v1', JSON.stringify(gearList));
+  // GASへバックグラウンド同期（保存操作をブロックしない）
+  const gasUrl = localStorage.getItem('gasWebAppUrl');
+  if (gasUrl) {
+    fetchWithTimeout(gasUrl, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'saveGear', gear:gearList })
+    }, 20000).catch(e => logErr('GEAR', `GAS自動同期エラー: ${e.message}`));
+  }
+}
 
 function showGearTab(name, btn) {
   gTab = name;
@@ -2120,8 +2220,27 @@ function applyGearBoardEvents() {
 
 // ── SETTINGS ──
 function buildGearSettings() {
+  const gasUrl = localStorage.getItem('gasWebAppUrl') || '';
   return `<div class="g-ai-wrap">
     <div class="g-section-title">⚙ 設定</div>
+
+    <!-- Googleスプレッドシート連携 -->
+    <div style="background:#0b0b18;border:1px solid ${gasUrl?'#14532d':'#16162a'};border-radius:8px;padding:16px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:6px">📊 Googleスプレッドシート連携</div>
+      <div style="font-size:11px;color:#64748b;line-height:1.8;margin-bottom:8px">
+        機材データ・検索条件をシートで管理します。<br>
+        アプリ上部「⚙設定」からGAS WebApp URLを先に入力してください。
+      </div>
+      <div style="font-size:10px;font-family:monospace;color:${gasUrl?'#4ade80':'#fbbf24'};margin-bottom:10px">
+        ${gasUrl ? '✓ GAS URL設定済み' : '⚠ GAS URL未設定 — アプリ設定タブから入力してください'}
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="g-load-gas-btn" class="g-btn-sm" style="${!gasUrl?'opacity:.5;cursor:not-allowed':''}" title="GASスプレッドシートから機材データを読み込む">📥 GASから読み込み</button>
+        <button id="g-save-gas-btn" class="g-btn-sm" style="background:#4ade80;color:#020209;${!gasUrl?'opacity:.5;cursor:not-allowed':''}" title="ローカルデータをGASスプレッドシートに書き出す">📤 GASに保存</button>
+      </div>
+    </div>
+
+    <!-- Gemini API Key -->
     <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px;margin-bottom:12px">
       <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">Gemini API Key（AI機能用・無料）</div>
       <div style="font-size:11px;color:#64748b;line-height:1.8;margin-bottom:10px">
@@ -2133,10 +2252,12 @@ function buildGearSettings() {
       <div style="font-size:10px;font-family:monospace;color:${geminiKey?'#4ade80':'#64748b'}">${geminiKey?'✓ APIキー設定済み — AI機能が使えます':'⚠ 未設定 — AI機能は使えません'}</div>
       <button id="g-save-key-btn" class="g-btn-sm" style="margin-top:10px">APIキーを保存</button>
     </div>
+
+    <!-- データ管理 -->
     <div style="background:#0b0b18;border:1px solid #16162a;border-radius:8px;padding:16px">
       <div style="font-size:13px;font-weight:700;color:#dde4f5;margin-bottom:8px">データ管理</div>
-      <div style="font-size:11px;color:#64748b;margin-bottom:10px">機材データはlocalStorageに保存されます。</div>
-      <button id="g-reset-btn" class="g-btn-del" style="font-size:12px">初期データにリセット</button>
+      <div style="font-size:11px;color:#64748b;margin-bottom:10px">localStorageキャッシュをクリアしてGASから再読み込みします。</div>
+      <button id="g-reset-btn" class="g-btn-del" style="font-size:12px">↺ キャッシュクリア &amp; GASから再読込</button>
     </div>
   </div>`;
 }
@@ -2148,10 +2269,27 @@ function applyGearSettingsEvents() {
     showToast(geminiKey?'✓ Gemini APIキーを保存しました':'⚠ APIキーをクリアしました');
     renderGearContent();
   });
+  // GASから読み込みボタン
+  document.getElementById('g-load-gas-btn')?.addEventListener('click', async ()=>{
+    const gasUrl = localStorage.getItem('gasWebAppUrl');
+    if (!gasUrl) { showToast('⚠ GAS URLを設定タブで入力してください'); return; }
+    if (!confirm('GASから機材データを読み込みますか？\nローカルキャッシュを上書きします。')) return;
+    localStorage.removeItem('cheapy-gear-v1');
+    gearList = []; gInited = false;
+    initGear();
+  });
+  // GASに保存ボタン
+  document.getElementById('g-save-gas-btn')?.addEventListener('click', ()=>{
+    if (!gearList.length) { showToast('⚠ 保存する機材データがありません'); return; }
+    syncGearToGas();
+  });
+  // キャッシュクリア & 再読込ボタン
   document.getElementById('g-reset-btn')?.addEventListener('click', ()=>{
-    if(!confirm('機材データを初期化しますか？AIスコアや編集内容は失われます。'))return;
-    gearList=[...GEAR_INIT]; gSel=[]; saveGear(); renderGearContent();
-    showToast('↺ 初期データにリセットしました');
+    if (!confirm('localStorageをクリアしてGASから再読み込みしますか？\n未同期の編集内容は失われます。')) return;
+    localStorage.removeItem('cheapy-gear-v1');
+    gearList = []; gSel = []; gInited = false;
+    initGear();
+    showToast('↺ キャッシュをクリアしました — GASから読み込み中...');
   });
 }
 
